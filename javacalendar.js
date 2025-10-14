@@ -42,8 +42,8 @@ const Month =  time.getMonth() + 1;
 const Year = time.getFullYear();
 
 //Calendar_Settings:
-const startDay = 21;
-const startMonth = 7;
+const startDay = 13;
+const startMonth = 10;
 const startWeek = 0; // 0=A, 1=B
 
 const monthDay = `${String(Month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
@@ -618,4 +618,5 @@ function loadTDL() {
         getel("TDL").appendChild(TDLabel);
     }
 }
+
 
