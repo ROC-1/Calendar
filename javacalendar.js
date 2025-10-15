@@ -23,7 +23,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-
 let dayStates = {}; // Store event text per day
 let hasUnsavedChanges = false;
 let selectedColor = 1;
@@ -45,19 +44,22 @@ const Year = time.getFullYear();
 const startDay = 13;
 const startMonth = 10;
 const startWeek = 0; // 0=A, 1=B
+const WeeklyEvents = {A: [1,0,1,0,0,0,0], B: [0,1,0,0,1,0,0]};
 
 const monthDay = `${String(Month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 let tempWeekFind = day;
-if (Month > 7) {
+/*if (Month > 7) {
     tempWeekFind += 31;
-}
-if (Month > 8) {
+} if (Month > 8) {
     tempWeekFind += 31;
-}
-if (Month > 9) {
+} if (Month > 9) {
     tempWeekFind += 30;
-} // To change the starting month, add more if() until it covers the whole calendar
-const MonthList = ["January", "February", "March", "April", "May", "June", "July", "August", "September"]
+}*/ if (Month > 10) {
+    tempWeekFind += 31;
+}if (Month > 11) {
+    tempWeekFind += 30;
+}// To change the starting month, add more if() until it covers the whole calendar
+const MonthList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const week = Math.ceil((tempWeekFind-startDay) / 7);
 console.log(`${monthDay} is today`);
 console.log(`${week} is this week`);
@@ -129,7 +131,6 @@ document.addEventListener('keydown', function(event) {
     if (event.key == "1" && pressingBacktick) {sss(2, 1);getel("LoggedIn").innerText = "Welcome back Riley";sss(3,"Admin")}
     if (event.key == "Enter") if(adding_TDL==1) {TLD_add();} else {storeDays();}
     if (event.key == "t" && document.activeElement !== calInput && adding_TDL==0) {window.scrollTo({ top: 1000, behavior: 'smooth' });setTimeout(TLD_add_start, 20)}
-    c(event.key)
 }); document.addEventListener('keyup', function(event) {
     if (event.key == "`") {pressingBacktick = 0}
 });
@@ -261,6 +262,7 @@ function buildCalendar() {
         const box = document.createElement("div");
         box.className = "day-box";
         box.dataset.day = i;
+        c(i)
         
         if (i % 7 == 0 || i % 7 == 6) {
             box.setAttribute("boxColor", "weekend")
@@ -269,7 +271,7 @@ function buildCalendar() {
             if (i % 7 == 4) {
                 box.setAttribute("boxColor", "thursday")
             }}
-            if ((i % 7 == 5 && Math.ceil(i/7) % 2 == startWeek) || (i % 7 == 2 && Math.ceil(i/7) % 2 == startWeek)) {
+            if (WeeklyEvents.A[(i%14)-1]==1 || WeeklyEvents.B[((i+7)%14)-1]==1) {
                 box.setAttribute("boxColor", "friSports")
         }
         const savedText = dayStates[dayKey] || "";
@@ -618,5 +620,3 @@ function loadTDL() {
         getel("TDL").appendChild(TDLabel);
     }
 }
-
-
