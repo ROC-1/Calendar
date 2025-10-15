@@ -262,7 +262,6 @@ function buildCalendar() {
         const box = document.createElement("div");
         box.className = "day-box";
         box.dataset.day = i;
-        c(i)
         
         if (i % 7 == 0 || i % 7 == 6) {
             box.setAttribute("boxColor", "weekend")
@@ -620,3 +619,4 @@ function loadTDL() {
         getel("TDL").appendChild(TDLabel);
     }
 }
+
