@@ -4,7 +4,7 @@ switch (mode) {
     case 2: sss(1,0); sss(2,1); sss(3,"Admin"); break;
     case 3: sss(1,1); sss(2,1); sss(3,"Admin"); break;
 }
-
+/*
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
@@ -22,6 +22,7 @@ const firebaseConfig = {
 // 🔗 Initialize Firebase and get database
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+*/
 
 let dayStates = {}; // Store event text per day
 let hasUnsavedChanges = false;
@@ -41,26 +42,16 @@ const Month =  time.getMonth() + 1;
 const Year = time.getFullYear();
 
 //Calendar_Settings:
-const startDay = 13;
-const startMonth = 10;
-const startWeek = 0; // 0=A, 1=B
+let startDay = 13;
+let startMonth = 10;
+let startWeek = 0; // 0=A, 1=B
 const WeeklyEvents = {A: [1,0,1,0,0,0,0], B: [0,1,0,0,1,0,0]};
 
 const monthDay = `${String(Month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-let tempWeekFind = day;
-/*if (Month > 7) {
-    tempWeekFind += 31;
-} if (Month > 8) {
-    tempWeekFind += 31;
-} if (Month > 9) {
-    tempWeekFind += 30;
-}*/ if (Month > 10) {
-    tempWeekFind += 31;
-}if (Month > 11) {
-    tempWeekFind += 30;
-}// To change the starting month, add more if() until it covers the whole calendar
-const MonthList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-const week = Math.ceil((tempWeekFind-startDay) / 7);
+const MonthList = {m:["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], 
+    d:["31 ", "28", "31", "30", "31", "30", "31", "31", "30", "31", "30", "31"]}
+let dayInCal = day
+const week = Math.ceil((day-startDay) / 7);
 console.log(`${monthDay} is today`);
 console.log(`${week} is this week`);
 
@@ -131,6 +122,8 @@ document.addEventListener('keydown', function(event) {
     if (event.key == "1" && pressingBacktick) {sss(2, 1);getel("LoggedIn").innerText = "Welcome back Riley";sss(3,"Admin")}
     if (event.key == "Enter") if(adding_TDL==1) {TLD_add();} else {storeDays();}
     if (event.key == "t" && document.activeElement !== calInput && adding_TDL==0) {window.scrollTo({ top: 1000, behavior: 'smooth' });setTimeout(TLD_add_start, 20)}
+    if (event.key == "ArrowRight") {startDay = 1;startMonth = 2;startWeek = 0;c("!");buildCalendar();}
+    c("Key pressed: "+event.key)
 }); document.addEventListener('keyup', function(event) {
     if (event.key == "`") {pressingBacktick = 0}
 });
@@ -241,9 +234,16 @@ function renderTooltip(box, text) {
     }
 }
 
+///////////////////////////////
+//////// MAIN FUNCTION ////////
+///////////////////////////////
+
 function buildCalendar() {
     const container = document.querySelector(".calendar-grid");
     container.innerHTML = "";
+    for (let j=0; j<Month-startMonth; j++) {
+        dayInCal += Number(MonthList.d[startMonth])
+    }
     for (let i = 1; i <= 70; i++) {
         if (i % 7 == 1) {
             const weekDiv = document.createElement("div");
@@ -258,6 +258,17 @@ function buildCalendar() {
             }
             container.appendChild(weekDiv);
         }
+        // sort out the months
+        let newDay = i + startDay - 1;
+        let newMonth = startMonth
+        for (let j = 1; j < 13; j++) {
+            if (newDay > MonthList.d[newMonth]) {
+                newDay -= MonthList.d[newMonth]
+                newMonth += 1
+            }
+        }
+        let displayDay = newDay
+
         const dayKey = "day" + i;
         const box = document.createElement("div");
         box.className = "day-box";
@@ -275,21 +286,7 @@ function buildCalendar() {
         }
         const savedText = dayStates[dayKey] || "";
         renderTooltip(box, savedText);
-        let tempMonth = startMonth
-        let displayDay = i+startDay-1
-        //Adjust this when changing the calendar starting month
-        if (displayDay > 31 && tempMonth == 7) {
-            displayDay -= 31;
-            tempMonth++;
-        }
-        if (displayDay > 31 && tempMonth == 8) {
-            displayDay -= 31;
-            tempMonth++;
-        }
-        if (displayDay > 30 && tempMonth == 9) {
-            displayDay -= 30;
-            tempMonth++;
-        }
+        
         box.setAttribute("week", Math.ceil(displayDay / 7));
         
         function savetrimmed() {
@@ -328,7 +325,7 @@ function buildCalendar() {
         } else {
             box.setAttribute("priority", 14);
         }
-        box.setAttribute("data-date", `${String(tempMonth).padStart(2, '0')}-${String(displayDay).padStart(2, '0')}`);
+        box.setAttribute("data-date", `${String(newMonth).padStart(2, '0')}-${String(displayDay).padStart(2, '0')}`);
         box.setAttribute("dayNum", displayDay)
         if (monthDay == box.getAttribute("data-date")) { //Change quick text if the box is today//
             box.setAttribute("today", "true");
@@ -396,15 +393,18 @@ function buildCalendar() {
             setTimeout(dueWorkList, 300)
         }});
         container.appendChild(box);
+
         box.addEventListener("mouseenter", () => {
             let dayAdd = "";
-            if ((i-1+startDay)-tempWeekFind >= 0) {
-                dayAdd = ("+" + ((i-1+startDay)-tempWeekFind) + "");
+            if ((i-1+startDay)-dayInCal >= 0) {
+                dayAdd = ("+" + ((i-1+startDay)-dayInCal) + "");
             }else{
-                dayAdd = (((i-1+startDay)-tempWeekFind) + "");
+                dayAdd = (((i-1+startDay)-dayInCal) + "");
             }
             if (dayAdd.includes("+0")){dayAdd = "Today"}
-            dayAdd += `, ${MonthList[tempMonth-1]} ${displayDay} ${Year}`
+            dayAdd += `, ${MonthList.m[newMonth-1]} ${displayDay} ${Year}`
+            if (Math.ceil(i/7) % 2 == startWeek)
+                {dayAdd += ", Week B"} else { dayAdd += ", Week A"}
             box.setAttribute("title", dayAdd)
         });
     }
@@ -412,7 +412,13 @@ function buildCalendar() {
     scrollFrame.scrollTo({ top: ((week-1)*86)-65, behavior: "smooth" });
     modifyEvents();
     if (hasLoaded) dueWorkList();
+    if (gss(1) === null) {setTimeout(() => {
+        c("alert!")
+    }, 4000);} // change to a smaller num later
 }
+
+////////END OF MAIN FUNCTION////////
+////////////////////////////////////
 
 function modifyEvents() {
     let getText = document.querySelectorAll(".event-text");
@@ -464,10 +470,7 @@ function dueWorkList() {
                     if (dayDifference(i) < 3) {
                         newDue.textContent = ("!"+newDue.textContent);
                         taskList.push(dayDifference(i));
-                    }/* else if (dayDifference(i) < 5) {
-                        newDue.textContent = ("!"+newDue.textContent); // Give a warning if the task is close
-                        urgentTaskList.push(dayDifference(i));
-                    }*/
+                    }
                 }
                 dueContainer.appendChild(newDue);
             }}}
@@ -485,7 +488,7 @@ function dueWorkList() {
 }
 
 function dayDifference(Target) {
-    return((Target-1+startDay)-tempWeekFind);
+    return((Target-1+startDay)-day);
 }
 
 window.STimeC = STimeC;
@@ -619,4 +622,3 @@ function loadTDL() {
         getel("TDL").appendChild(TDLabel);
     }
 }
-
