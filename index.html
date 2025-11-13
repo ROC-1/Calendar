@@ -7,7 +7,8 @@
     <link rel="icon" href="Logo.png" type="image/png">
     <script src="javamain.js"></script>
 
-    <script type="module" src="javacalendar.js"></script>
+    <!--script type="module" src="javacalendar.js"--></script>
+    <script src="javacalendar.js"></script>
 </head>
 <body>
     <div id="topDiv">
@@ -54,6 +55,7 @@
     </div>
 
     <div id="TDL">
+        <h3 id="TDL_MainText">To Do List</h3>
         <button id="TDL_button" class="add_TDL" onclick="TLD_add_start()">+</button>
         <input hidden type="text" id="TDLInput" class="add_TDL" placeholder="Add a task...">
         <input hidden type="number" id="TDLInput2" class="add_TDL" placeholder="0">
@@ -61,5 +63,3 @@
     </div>
 </body>
 </html>
-
-
