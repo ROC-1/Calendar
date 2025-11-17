@@ -1,4 +1,4 @@
-let mode = 2 // 1=Normal 2=AutoLogin 3=Test
+let mode = 3 // 1=Normal 2=AutoLogin 3=Test
 switch (mode) {
     case 1: sss(1,0); break;
     case 2: sss(1,0); sss(2,1); sss(3,"Admin"); break;
@@ -615,4 +615,5 @@ function loadTDL() {
         getel("TDL").appendChild(TDLabel);
     }
 }
+
 
