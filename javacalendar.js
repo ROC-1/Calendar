@@ -1,4 +1,4 @@
-let mode = 3 // 1=Normal 2=AutoLogin 3=Test
+let mode = 2 // 1=Normal 2=AutoLogin 3=Test
 setTimeout(() => {
     switch (mode) {
         case 1: sss(1,0); break;
@@ -7,7 +7,7 @@ setTimeout(() => {
     }
 }, 300)
 
-/*
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
@@ -25,7 +25,7 @@ const firebaseConfig = {
 // 🔗 Initialize Firebase and get database
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-*/
+
 
 let dayStates = {}; // Store event text per day
 let hasUnsavedChanges = false;
@@ -616,3 +616,4 @@ function loadTDL() {
         getel("TDL").appendChild(TDLabel);
     }
 }
+
