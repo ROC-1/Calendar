@@ -1,10 +1,13 @@
-let mode = 1 // 1=Normal 2=AutoLogin 3=Test
-switch (mode) {
-    case 1: sss(1,0); break;
-    case 2: sss(1,0); sss(2,1); sss(3,"Admin"); break;
-    case 3: sss(1,1); sss(2,1); sss(3,"Admin"); break;
-}
+let mode = 3 // 1=Normal 2=AutoLogin 3=Test
+setTimeout(() => {
+    switch (mode) {
+        case 1: sss(1,0); break;
+        case 2: sss(1,0); sss(2,1); sss(3,"Admin"); break;
+        case 3: sss(1,1); sss(2,1); sss(3,"Admin"); break;
+    }
+}, 300)
 
+/*
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
@@ -22,7 +25,7 @@ const firebaseConfig = {
 // 🔗 Initialize Firebase and get database
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-
+*/
 
 let dayStates = {}; // Store event text per day
 let hasUnsavedChanges = false;
@@ -42,10 +45,11 @@ const Month =  time.getMonth() + 1;
 const Year = time.getFullYear();
 
 //Calendar_Settings:
-let startDay = 12;
+let startDay = 13;
 let startMonth = 10;
 let startWeek = 0; // 0=A, 1=B
-const WeeklyEvents = {A: [1,0,1,0,0,0,0], B: [0,1,0,0,1,0,0]};
+const WeeklyEvents = {A:[1,0,1,0,0,0,0], B:[0,1,0,0,1,0,0]};
+const totalWeeks = 9
 
 const monthDay = `${String(Month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 const MonthList = {m:["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], 
@@ -241,10 +245,12 @@ function renderTooltip(box, text) {
 function buildCalendar() {
     const container = document.querySelector(".calendar-grid");
     container.innerHTML = "";
+    dayInCal = day;
     for (let j=0; j<Month-startMonth; j++) {
-        dayInCal += Number(MonthList.d[startMonth])
+        dayInCal += Number(MonthList.d[startMonth-1+j])
+        c(dayInCal)
     }
-    for (let i = 1; i <= 70; i++) {
+    for (let i = 1; i <= (7*totalWeeks); i++) {
         if (i % 7 == 1) {
             const weekDiv = document.createElement("div");
             weekDiv.textContent = Math.ceil(i / 7)
@@ -262,8 +268,8 @@ function buildCalendar() {
         let newDay = i + startDay - 1;
         let newMonth = startMonth
         for (let j = 1; j < 13; j++) {
-            if (newDay > MonthList.d[newMonth]) {
-                newDay -= MonthList.d[newMonth]
+            if (newDay > MonthList.d[newMonth-1]) {
+                newDay -= MonthList.d[newMonth-1]
                 newMonth += 1
             }
         }
@@ -296,20 +302,15 @@ function buildCalendar() {
             : `<div class="day-num">${displayDay}</div>`;
         }
         if (savedText.includes("/r")) {
-            savetrimmed()
-            box.setAttribute("boxEventColor", "red")
+            savetrimmed();box.setAttribute("boxEventColor", "red")
         } else if (savedText.includes("/o")) {
-            savetrimmed()
-            box.setAttribute("boxEventColor", "or");
+            savetrimmed();box.setAttribute("boxEventColor", "or");
         } else if (savedText.includes("/g")) {
-            savetrimmed()
-            box.setAttribute("boxEventColor", "grey");
+            savetrimmed();box.setAttribute("boxEventColor", "grey");
         } else if (savedText.includes("/p")) {
-            savetrimmed()
-            box.setAttribute("boxEventColor", "purple");
+            savetrimmed();box.setAttribute("boxEventColor", "purple");
         } else if (savedText.includes("/c")){
-            savetrimmed()
-            box.setAttribute("boxEventColor", "clear");
+            savetrimmed();box.setAttribute("boxEventColor", "clear");
         } else {
             box.innerHTML = savedText
             ? `<div class="day-num">${displayDay}</div><div class="event-text">${savedText}</div>`
@@ -615,6 +616,3 @@ function loadTDL() {
         getel("TDL").appendChild(TDLabel);
     }
 }
-
-
-
