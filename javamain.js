@@ -6,19 +6,17 @@ window.c = console.log
 window.getel = function getel(el) {return document.getElementById(el)}
 
 window.gss = function gss(type) {
-    //c("get "+type)
-    if (type==1){return(sessionStorage.getItem("Testmode"))}
-    if (type==2){return(sessionStorage.getItem("ISADMIN"))}
+    if (type==1){return(Number(sessionStorage.getItem("Testmode")))}
+    if (type==2){return(Number(sessionStorage.getItem("ISADMIN")))}
     if (type==3){return(sessionStorage.getItem("User"))}
 }
 window.sss = function sss(type, set) {
-    //c("set "+type+" to "+set)
     if (type==1){return(sessionStorage.setItem("Testmode", set))}
     if (type==2){return(sessionStorage.setItem("ISADMIN", set))}
     if (type==3){return(sessionStorage.setItem("User", set))}
 }
 
-if (gss(2) === null) {
+if (gss(2) === 0) {
     if (gss(1)==1){sss(2, 1)} else {sss(2, 0)}
     if (gss(1)==1){sss(3, "Admin")} else {sss(3, 0)}
 }
@@ -30,6 +28,10 @@ let TopBar3
 
 ////CONTENT LOADED////
 document.addEventListener("DOMContentLoaded", () => {
+    if (gss(3) != 0) {localStorage.setItem("UserLocal", gss(3))}
+    else {const UL=localStorage.getItem("UserLocal");if (UL != 0) {c(",,")};sss(3, UL)}
+    
+
     const headline = document.getElementById("headline-1");
     //TopDiv = document.getElementById("topDiv");
     TopBar = document.createElement("div");
@@ -45,14 +47,14 @@ document.addEventListener("DOMContentLoaded", () => {
         TopBar2 = document.createElement("div");
         TopBar3 = document.createElement("div");
         
-        TopBar1.innerHTML = '<b><a class="TopA" href="index.html">&nbsp;Term 3 Calendar</a></b>';
+        TopBar1.innerHTML = '<b><a class="TopA" href="index.html">&nbsp;&nbsp;Term Calendar</a></b>';
         TopBar1.className = "TopBarEl";
         TopBar1.id = "TopBar1";
         TopBar2.innerHTML = '<b><a class="TopA" href="Games.html">&nbsp &nbsp &nbsp &nbsp &nbspGames &nbsp &nbsp &nbsp &nbsp &nbsp</a></b>';
         TopBar2.className = "TopBarEl";
         TopBar2.id = "TopBar2";
         if (gss(2)==1) {
-            TopBar3.innerHTML = '<b><a class="TopA" href="Games.html">&nbsp &nbsp &nbsp &nbsp &nbsp Music &nbsp &nbsp &nbsp &nbsp &nbsp</a></b>';
+            TopBar3.innerHTML = '<b><a class="TopA" href="Music.html">&nbsp &nbsp &nbsp &nbsp &nbsp Music &nbsp &nbsp &nbsp &nbsp &nbsp</a></b>';
             TopBar3.className = "TopBarEl";
             TopBar3.id = "TopBar3";
         }
