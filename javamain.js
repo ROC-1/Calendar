@@ -1,4 +1,3 @@
-[]
 sessionStorage.setItem("Testmode",0)
 // gss: Get Session Storage
 // sss: Set Session Storage
@@ -30,7 +29,9 @@ let TopBar3
 ////CONTENT LOADED////
 document.addEventListener("DOMContentLoaded", () => {
     if (gss(3) != 0) {localStorage.setItem("UserLocal", gss(3))}
-    else {const UL=localStorage.getItem("UserLocal");if(UL != 0 && UL != null){sss(3, UL);StartLoad()}}
+    else {const UL=localStorage.getItem("UserLocal");if(UL != 0 && UL != null){sss(3, UL);StartLoad()
+        if(gss(3) == "Admin") {sss(2, 1)}
+    }}
 
     const headline = document.getElementById("headline-1");
     //TopDiv = document.getElementById("topDiv");
