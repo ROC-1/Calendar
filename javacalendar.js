@@ -1,3 +1,4 @@
+[]
 //After updating to Github, change mode to 1 and remove /* */ for imports, set Testmode in javamain to 0
 let mode = 1 // 1=Normal 2=AutoLogin 3=Test
 setTimeout(() => {
@@ -167,7 +168,7 @@ function newLoadDays() {
             document.body.style.cursor = "default";
             getel("load_message").innerText = ""
         } else {
-            console.error("No data available");
+            console.error("No data, creating profile");
             getel("load_message").innerText = "Creating a new profile..."
             set(ref(db, gss(3)), {
                 Calendar: {
@@ -175,7 +176,8 @@ function newLoadDays() {
                 Games: {
                     Snake_Score: 0},
                 Profile: {
-                    createdAt: (day.toString()+"-"+Month.toString()+"-"+Year.toString())}
+                    createdAt: (day.toString()+"-"+Month.toString()+"-"+Year.toString())},
+                TDL: {}
             });
             setTimeout(newLoadDays, 100);
         }
@@ -256,6 +258,7 @@ function buildCalendar() {
         dayInCal += Number(MonthList.d[startMonth-1+j])
         c(dayInCal)
     }
+    dueWorkList()
     for (let i = 1; i <= (7*totalWeeks); i++) {
         if (i % 7 == 1) {
             const weekDiv = document.createElement("div");
