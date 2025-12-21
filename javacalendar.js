@@ -1,4 +1,5 @@
-let mode = 2 // 1=Normal 2=AutoLogin 3=Test
+//After updating to Github, change mode to 1 and remove /* */ for imports, set Testmode in javamain to 0
+let mode = 1 // 1=Normal 2=AutoLogin 3=Test
 setTimeout(() => {
     switch (mode) {
         case 1: sss(1,0); break;
@@ -44,16 +45,21 @@ const day =  time.getDate();
 const Month =  time.getMonth() + 1;
 const Year = time.getFullYear();
 
+const monthDay = `${String(Month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+const MonthList = {
+    m:["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], 
+    d:["31 ", "28", "31", "30", "31", "30", "31", "31", "30", "31", "30", "31"]}
+
 //Calendar_Settings:
+let termdata = { SD:[1, 1, 1, 13], SM:[2, 4, 6, 10], SW:[0, 0, 0, 0], Weeks:[11,9,10,9],
+    WEvents:{A:[1,0,1,0,0,0,0], B:[0,1,0,0,1,0,0]}
+}
+let term = 4
 let startDay = 13;
 let startMonth = 10;
 let startWeek = 0; // 0=A, 1=B
 const WeeklyEvents = {A:[1,0,1,0,0,0,0], B:[0,1,0,0,1,0,0]};
 const totalWeeks = 9
-
-const monthDay = `${String(Month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-const MonthList = {m:["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], 
-    d:["31 ", "28", "31", "30", "31", "30", "31", "31", "30", "31", "30", "31"]}
 let dayInCal = day
 const week = Math.ceil((day-startDay) / 7);
 console.log(`${monthDay} is today`);
@@ -562,6 +568,7 @@ function LogIn() {
     getel("LogInBg").hidden = true
     sss(3, getel("LogInput").value)
     getel("LoggedIn").innerText = "Logged in!"
+    localStorage.setItem("UserLocal", gss(3))
     if (loadclicked) {
         StartLoad()
     }
@@ -616,4 +623,3 @@ function loadTDL() {
         getel("TDL").appendChild(TDLabel);
     }
 }
-
