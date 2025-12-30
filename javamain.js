@@ -1,4 +1,4 @@
-sessionStorage.setItem("Testmode",0)
+sessionStorage.setItem("Testmode",0) // change in GITHUB
 // gss: Get Session Storage
 // sss: Set Session Storage
 // 1: Testmode  2: ISADMIN  3: User
@@ -59,11 +59,18 @@ document.addEventListener("DOMContentLoaded", () => {
             TopBar3.className = "TopBarEl";
             TopBar3.id = "TopBar3";
         }
+        /*
         if (window.location.pathname.split("/").pop() == "index.html")
             {TopBar1.id="TopBar1";TopBar2.id="TopBar2";TopBar3.id="TopBar3";}
         else if (window.location.pathname.split("/").pop() == "Games.html")
             {TopBar1.id="TopBar2";TopBar2.id="TopBar1";TopBar3.id="TopBar3";}
-        else {TopBar1.id="TopBar2";TopBar2.id="TopBar3";TopBar3.id="TopBar1";}
+        else {TopBar1.id="TopBar2";TopBar2.id="TopBar3";TopBar3.id="TopBar1";}*/
+
+        if (window.location.pathname.split("/").pop() == "Games.html")
+            {TopBar1.id="TopBar2";TopBar2.id="TopBar1";TopBar3.id="TopBar3";}
+        else if (window.location.pathname.split("/").pop() == "Music.html")
+            {TopBar1.id="TopBar2";TopBar2.id="TopBar3";TopBar3.id="TopBar1";}
+        else {TopBar1.id="TopBar1";TopBar2.id="TopBar2";TopBar3.id="TopBar3";}
         TopBar.appendChild(TopBar1);
         TopBar.appendChild(TopBar2);
         TopBar.appendChild(TopBar3);
