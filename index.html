@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script type="module" src="javacalendar.js"></script>
     <meta charset="UTF-8">
     <title id="Title">Term 4 Calendar</title>
     <link rel="stylesheet" href="csstest.css">
     <link rel="icon" href="Logo.png" type="image/png">
     <script src="javamain.js"></script>
-
-    <script type="module" src="javacalendar.js"></script>
 </head>
 <body>
     <div id="topDiv">
-        <div id="headline-1"><b>Term 3 Calendar</b></div>
+        <div id="headline-1"><b>Term Calendar</b></div>
         <p id="quickText">Today: No events</p>
         <button id="LoggedIn" onclick="NotLoggedIn()">Not Logged In</button>
     </div>
+
+    <p id="TermText" hidden>Term 4</p>
 
     <input type="text" id="eventInput"/>
     <button class="eventClear" onclick="clearInput()">✖️ Clear</button>
@@ -46,8 +47,9 @@
 
     <div id="LogInBg" hidden>
         <div id="LogInDiv"><p id="LogInP">Log in to save your calendar events</p>
-            <input id="LogInput" type="text" placeholder="Username">
-            <p>If you do not have a username for yourself, this will create one for you. Make sure to remember it.</p>
+            <input class="LogInput" id="UserInput" type="text" placeholder="Username">
+            <input class="LogInput" id="PasswordInput" type="text" placeholder="Password">
+            <p>If you do not have a username for yourself, this will create one for you. Make sure to remember log-in info.</p>
             <button id="LogIn" onclick="LogIn()">Log In</button>
             <button id="cancelLogIn" onclick="CancelLogIn()">Cancel</button>
         </div>
@@ -62,4 +64,3 @@
     </div>
 </body>
 </html>
-
