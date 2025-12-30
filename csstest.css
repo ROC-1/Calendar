@@ -22,7 +22,7 @@ body {
     background-color: #64646400;
     border: 4px #202020 solid;
     margin-top: 7px;
-    margin-left: -4px;
+    margin-left: -10px;
     padding-top: 9px;
     text-align: center;
 }
@@ -111,17 +111,19 @@ body {
     font-size: 26px;
     line-height: 35px;
 } #LogInP {
-    margin-top: -10px;
+    margin-top: 10px;
 }
-#LogInput {
+.LogInput {
     font-size: x-large;
     width: 250px;
-    height: 30px;
+    height: 50px;
     margin-left: 50%;
-    margin-top: 0px;
+    margin-top: -10px;
     transform: translate(-50%);
     border: 5px solid;
     border-radius: 5px;
+} #PasswordInput {
+    margin-top: 5px;
 }
 #LogIn {
     font-size: xx-large;
@@ -131,7 +133,7 @@ body {
     cursor: pointer;
     width: 150px;
     margin-left: 50%;
-    margin-top: -10px;
+    margin-top: -20px;
     transform: translate(-50%);
 } #LogIn[Ready="1"] {
     background-color: #6d6d92;
@@ -143,7 +145,7 @@ body {
 #cancelLogIn {
     width: 120px;
     font-size: x-large;
-    margin-top: 20px;
+    margin-top: 10px;
     margin-left: 50%;
     transform: translate(-50%);
     background-color: #bdbdbd;
@@ -151,12 +153,18 @@ body {
 _____________________________
 ****vvvvvvvvvvvvvvvvvvvvv****
 ****---------------------****
-****/*/*/ CALENDAR /*/*/****
+****/*/*/ CALENDAR /*/*/*****
 ****---------------------****
 ****vvvvvvvvvvvvvvvvvvvvv****
 
 #decoy {
     width: 0;
+}
+
+#TermText {
+    font-size: 45px;
+    margin-top: -8px;
+    margin-bottom: 10px;
 }
 
 #AddEventDiv {
