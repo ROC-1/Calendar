@@ -1,5 +1,5 @@
 []
-//After updating to Github, change mode to 1 and remove /* */ for imports, set Testmode in javamain to 0
+//After updating to Github, change mode to 1 and remove /* */ for imports, set Testmode in javamain to 0, change script to module
 let mode = 1 // 1=Normal 2=AutoLogin 3=Test
 setTimeout(() => {
     switch (mode) {
@@ -9,7 +9,7 @@ setTimeout(() => {
     }
 }, 300)
 
-
+/*
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
@@ -27,7 +27,7 @@ const firebaseConfig = {
 // 🔗 Initialize Firebase and get database
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-
+*/
 
 let dayStates = {}; // Store event text per day
 let hasUnsavedChanges = false;
@@ -117,8 +117,11 @@ function Loop() {
         STelement.innerHTML =`Overtime: <span id="colored">${0-dayStates["studyTime"]}m</span>`
         getel("colored").style.color = "#00ee00";
     } else {STelement.style.color = "#ffffff"}
-    if (getel("LogInput").value!=""){getel("LogIn").setAttribute("Ready","1")}
-    else {getel("LogIn").setAttribute("Ready","0")}
+    if (getel("LogInBg").hidden == false) {
+        if (getel("UserInput").value != "" && getel("PasswordInput").value != "") {
+            getel("LogIn").setAttribute("Ready","1")}
+        else {getel("LogIn").setAttribute("Ready","0")}
+    }
     setTimeout(Loop, 400)
 }
 
@@ -154,8 +157,8 @@ function newLoadDays() {
     const dbRef = ref(db);
     get(child(dbRef, `${gss(3)}/Calendar`)).then((snapshot) => {
         if (snapshot.exists()) {
-            const newdata = snapshot.val()
-            dayStates = snapshot.val();
+            const newdata = snapshot.val();
+            dayStates = newdata;
             dayStates["studyTime"] = Math.round(dayStates["studyTime"] || 0);
             hasLoaded = 1;
             if(gss(2)==1){getel("STimeAdd").hidden=false;getel("TimeB").hidden=false;getel("STime").hidden=false;getel("Timer").hidden=false}
@@ -176,7 +179,8 @@ function newLoadDays() {
                 Games: {
                     Snake_Score: 0},
                 Profile: {
-                    createdAt: (day.toString()+"-"+Month.toString()+"-"+Year.toString())},
+                    createdAt: (day.toString()+"-"+Month.toString()+"-"+Year.toString()),
+                    Password: getel("PasswordInput").input},
                 TDL: {}
             });
             setTimeout(newLoadDays, 100);
@@ -566,16 +570,25 @@ function NotLoggedIn() {
 }
 window.LogIn = LogIn;
 function LogIn() {
-    let uservalue = getel("LogInput").value
-    if (uservalue != "Admin" && uservalue != "") {
-    getel("LogInBg").hidden = true
-    sss(3, getel("LogInput").value)
-    getel("LoggedIn").innerText = "Logged in!"
-    localStorage.setItem("UserLocal", gss(3))
-    if (loadclicked) {
-        StartLoad()
+    let uservalue = getel("UserInput").value
+    if (uservalue != "Admin" && uservalue != "" && getel("PasswordInput").value != "") {
+        const dbRef = ref(db);
+        get(child(dbRef, `${uservalue}/Profile/Password`)).then((pass) => {
+            if (pass.val() == getel("PasswordInput").value) {
+                getel("LogInBg").hidden = true
+                sss(3, getel("UserInput").value)
+                getel("LoggedIn").innerText = "Logged in!"
+                localStorage.setItem("UserLocal", gss(3))
+                if (loadclicked) {
+                    StartLoad()
+                }
+            }
+        })
+    } else {
+        getel("PasswordInput").value = ""
+        getel("PasswordInput").placeholder = "Incorrect Password"
     }
-}}
+}
 window.CancelLogIn = CancelLogIn;
 function CancelLogIn() {
     getel("LogInBg").hidden = true
