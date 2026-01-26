@@ -1,7 +1,4 @@
-sessionStorage.setItem("Testmode",0) // change in GITHUB
-// gss: Get Session Storage
-// sss: Set Session Storage
-// 1: Testmode  2: ISADMIN  3: User
+sessionStorage.setItem("Testmode",0)
 window.c = console.log
 window.getel = function getel(el) {return document.getElementById(el)}
 
@@ -47,6 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
         TopBar1 = document.createElement("div");
         TopBar2 = document.createElement("div");
         TopBar3 = document.createElement("div");
+        TopBar1.style.marginLeft="1px";TopBar2.style.marginLeft="1px";TopBar3.style.marginLeft="1px";
         
         TopBar1.innerHTML = '<b><a class="TopA" href="index.html">&nbsp;&nbsp;Term Calendar</a></b>';
         TopBar1.className = "TopBarEl";
@@ -80,4 +78,13 @@ document.addEventListener("DOMContentLoaded", () => {
             TopBar3.remove();
         })
     })
+    setTimeout(()=> {
+        if (gss(1)===null) {
+            sss(1, 0)
+        }if (gss(2)===null) {
+            sss(2, 0)
+        }if (gss(3)===null) {
+            sss(3, 0)
+        }
+    }, 500)
 })
