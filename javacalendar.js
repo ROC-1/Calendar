@@ -1,4 +1,4 @@
-let mode = 1 // 1=Normal 2=AutoLogin 3=Test
+let mode = 1
 setTimeout(() => {
     switch (mode) {
         case 1: sss(1,0); break;
@@ -6,7 +6,6 @@ setTimeout(() => {
         case 3: sss(1,1); sss(2,1); sss(3,"Admin"); break;
     }
 }, 300)
-
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
@@ -25,7 +24,6 @@ const firebaseConfig = {
 // 🔗 Initialize Firebase and get database
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-
 
 let dayStates = {}; // Store event text per day
 let hasUnsavedChanges = false;
@@ -393,26 +391,26 @@ function boxClicked($day, $box) {
             if (text[0] == "#") {
                 trimmed2 = trimmed2.slice(3);
             }
-            $box.innerHTML = `<div class="day-num">${$box.getAttribute("dayNum")}</div><div class="event-text">${trimmed2}</div>`
+            $box.innerHTML = `<div class="day-num">${$box.getAttribute("day")}</div><div class="event-text">${trimmed2}</div>`
             $box.setAttribute("boxEventColor", "red")
         } else if (text.includes("/o")){
             let trimmed2 = text.slice(0, -2);
-            $box.innerHTML = `<div class="day-num">${$box.getAttribute("dayNum")}</div><div class="event-text">${trimmed2}</div>`
+            $box.innerHTML = `<div class="day-num">${$box.getAttribute("day")}</div><div class="event-text">${trimmed2}</div>`
             $box.setAttribute("boxEventColor", "or")
         } else if (text.includes("/g")){
             let trimmed2 = text.slice(0, -2);
-            $box.innerHTML = `<div class="day-num">${$box.getAttribute("dayNum")}</div><div class="event-text">${trimmed2}</div>`
+            $box.innerHTML = `<div class="day-num">${$box.getAttribute("day")}</div><div class="event-text">${trimmed2}</div>`
             $box.setAttribute("boxEventColor", "grey")
         } else if (text.includes("/p")){
             let trimmed2 = text.slice(0, -2);
-            $box.innerHTML = `<div class="day-num">${$box.getAttribute("dayNum")}</div><div class="event-text">${trimmed2}</div>`
+            $box.innerHTML = `<div class="day-num">${$box.getAttribute("day")}</div><div class="event-text">${trimmed2}</div>`
             $box.setAttribute("boxEventColor", "purple")
         } else if (text.includes("/c")){
             let trimmed2 = text.slice(0, -2);
-            $box.innerHTML = `<div class="day-num">${$box.getAttribute("dayNum")}</div><div class="event-text">${trimmed2}</div>`
+            $box.innerHTML = `<div class="day-num">${$box.getAttribute("day")}</div><div class="event-text">${trimmed2}</div>`
             $box.setAttribute("boxEventColor", "clear")
         } else {
-            $box.innerHTML = `<div class="day-num">${$box.getAttribute("dayNum")}</div><div class="event-text">${text}</div>`
+            $box.innerHTML = `<div class="day-num">${$box.getAttribute("day")}</div><div class="event-text">${text}</div>`
             $box.setAttribute("boxEventColor", "green")
         }
         renderTooltip($box, text);
