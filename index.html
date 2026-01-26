@@ -4,7 +4,7 @@
     <script type="module" src="javacalendar.js"></script>
     <meta charset="UTF-8">
     <title id="Title">Term 4 Calendar</title>
-    <link rel="stylesheet" href="csstest.css">
+    <link rel="stylesheet" href="style.css">
     <link rel="icon" href="Logo.png" type="image/png">
     <script src="javamain.js"></script>
 </head>
@@ -12,20 +12,26 @@
     <div id="topDiv">
         <div id="headline-1"><b>Term Calendar</b></div>
         <p id="quickText">Today: No events</p>
-        <button id="LoggedIn" onclick="NotLoggedIn()">Not Logged In</button>
+        <button id="LoggedIn" class="LogB" onclick="NotLoggedIn()">Not Logged In</button>
     </div>
+    <button id="LogOut" class="LogB" onclick="LogOut()" hidden>Log out</button>
 
-    <p id="TermText" hidden>Term 4</p>
+    <div id="TermText">
+        <svg class="TTG" onclick="TDown()"><polygon points="58,11 58,61 18,36" fill="#eeee" stroke="black" stroke-width="3"></svg>
+            &nbsp;Term <span id="TermNum">4</span>
+        <svg class="TTG" onclick="TUp()"><polygon points="18,11 18,61 58,36" fill="#eee" stroke="black" stroke-width="3"></svg>
+    </div>
 
     <input type="text" id="eventInput"/>
     <button class="eventClear" onclick="clearInput()">✖️ Clear</button>
     <button class="colorChange" id="color-green">g</button>
-    <button class="colorChange" id="color-or">o</button>
+    <button class="colorChange" id="color-orange">o</button>
     <button class="colorChange" id="color-red">b</button>
     <button class="colorChange" id="color-grey">g</button>
     <button class="colorChange" id="color-purple">p</button>
     <button class="colorChange" id="color-clear">c</button>
-    <button id="saveWarning"><b>!!</b></button>
+    <button class="eventClear" id="FinalAdd" onclick="AddEvent()" hidden>Add Event</button>
+    <!--button id="saveWarning"><b>!!</b></button-->
     <button id="saveEvent"onclick="storeDays()">Save Changes</button>
 
     <div id="calendarScroll">
@@ -54,6 +60,8 @@
             <button id="cancelLogIn" onclick="CancelLogIn()">Cancel</button>
         </div>
     </div>
+
+    <button id="AddEvent" onclick="AddEventStart()" hidden>Add Event</button>
 
     <div id="TDL">
         <h3 id="TDL_MainText">To Do List</h3>
