@@ -7,6 +7,7 @@ setTimeout(() => {
     }
 }, 300)
 
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
@@ -24,6 +25,7 @@ const firebaseConfig = {
 // 🔗 Initialize Firebase and get database
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+
 
 let dayStates = {}; // Store event text per day
 let hasUnsavedChanges = false;
@@ -254,7 +256,6 @@ function renderTooltip(box, text) {
 ///////////////////////////////
 //////// MAIN FUNCTION ////////
 ///////////////////////////////
-
 function buildCalendar() {
     const container = document.querySelector(".calendar-grid");
     container.innerHTML = "";
@@ -288,9 +289,8 @@ function buildCalendar() {
                 box_month += 1
             }
         }
-        let displayDay = box_day
         //const dayKey = "day" + i;
-        dayKey = `${box_day}-${box_month}`
+        dayKey = `${String(box_day).padStart(2, '0')}-${String(box_month).padStart(2, '0')}`
         const box = document.createElement("div");
         box.className = "day-box";
         box.dataset.day = i;
@@ -306,12 +306,12 @@ function buildCalendar() {
         }
         const savedText = dayStates[dayKey] || "";
         renderTooltip(box, savedText);
-        box.setAttribute("week", Math.ceil(displayDay / 7));
+        box.setAttribute("week", Math.ceil(box_day / 7));
         function savetrimmed() {
             let trimmed = savedText.slice(0, -2);
             box.innerHTML = savedText
-            ? `<div class="day-num">${displayDay}</div><div class="event-text">${trimmed}</div>`
-            : `<div class="day-num">${displayDay}</div>`;
+            ? `<div class="day-num">${box_day}</div><div class="event-text">${trimmed}</div>`
+            : `<div class="day-num">${box_day}</div>`;
         }
         if (savedText.includes("/r")) {savetrimmed();box.setAttribute("boxEventColor", "red")
         } else if (savedText.includes("/o")) {savetrimmed();box.setAttribute("boxEventColor", "or");
@@ -320,22 +320,21 @@ function buildCalendar() {
         } else if (savedText.includes("/c")){savetrimmed();box.setAttribute("boxEventColor", "clear");
         } else {
             box.innerHTML = savedText
-            ? `<div class="day-num">${displayDay}</div><div class="event-text">${savedText}</div>`
-            : `<div class="day-num">${displayDay}</div>`;
+            ? `<div class="day-num">${box_day}</div><div class="event-text">${savedText}</div>`
+            : `<div class="day-num">${box_day}</div>`;
             box.setAttribute("boxEventColor", "green");    
         }
         if (savedText[0] == "#") {
             let trimmed = savedText.slice(3, -2);
             box.innerHTML = savedText
-            ? `<div class="day-num">${displayDay}</div><div class="event-text">${trimmed}</div>`
-            : `<div class="day-num">${displayDay}</div>`;
+            ? `<div class="day-num">${box_day}</div><div class="event-text">${trimmed}</div>`
+            : `<div class="day-num">${box_day}</div>`;
             box.setAttribute("priority", (savedText[1]+savedText[2]));
         } else {
             box.setAttribute("priority", 14);
         }
-        box.setAttribute("data-date", `${String(box_day).padStart(2, '0')}-${String(box_month).padStart(2, '0')}`);
+        box.setAttribute("data-date", dayKey);
         box.setAttribute("day", box_day); box.setAttribute("month", box_month)
-        box.setAttribute("dayNum", displayDay)
         if (monthDay == box.getAttribute("data-date")) { //Change quick text if the box is today//
             box.setAttribute("today", "true");
             if (gss(2)=="1") {
@@ -360,7 +359,7 @@ function buildCalendar() {
                 dayAdd = (((i-1+startDay)-box.getAttribute("day")) + "");
             }
             if (dayAdd.includes("+0")){dayAdd = "Today"}
-            dayAdd += `, ${MonthList.m[box.getAttribute("month")-1]} ${displayDay} ${Year}`
+            dayAdd += `, ${MonthList.m[box.getAttribute("month")-1]} ${box.getAttribute("day")} ${Year}`
             if (Math.ceil(i/7) % 2 == startWeek)
                 {dayAdd += ", Week B"} else { dayAdd += ", Week A"}
             box.setAttribute("title", dayAdd)
