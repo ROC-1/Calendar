@@ -1,4 +1,4 @@
-let mode = 1
+let mode = 1 // 1=Normal 2=AutoLogin 3=Test
 setTimeout(() => {
     switch (mode) {
         case 1: sss(1,0); break;
@@ -6,7 +6,6 @@ setTimeout(() => {
         case 3: sss(1,1); sss(2,1); sss(3,"Admin"); break;
     }
 }, 300)
-
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
@@ -26,7 +25,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-
 let dayStates = {}; // Store event text per day
 let hasUnsavedChanges = false;
 let selectedColor = 1;
@@ -40,25 +38,27 @@ let pressingControl = 0;
 let pressingBacktick = 0;
 let loadclicked = 0;
 let time = new Date();
+let mousex = 0;
+let mousey = 0;
+let selectedDay = 0;
+let dayKey = 0;
 const day =  time.getDate();
 const Month =  time.getMonth() + 1;
 const Year = time.getFullYear();
 
-const monthDay = `${String(Month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+const monthDay = `${String(day).padStart(2, '0')}/${String(Month).padStart(2, '0')}`;
 const MonthList = {
     m:["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], 
     d:["31 ", "28", "31", "30", "31", "30", "31", "31", "30", "31", "30", "31"]}
 
 //Calendar_Settings:
-let termdata = { SD:[1, 1, 1, 13], SM:[2, 4, 6, 10], SW:[0, 0, 0, 0], Weeks:[11,9,10,9],
+let termdata = { SD:[1, 1, 1, 13], SM:[2, 4, 6, 10], SW:[0, 0, 0, 0]/*A or B*/, Weeks:[11,9,10,9],
     WEvents:{A:[1,0,1,0,0,0,0], B:[0,1,0,0,1,0,0]}
 }
 let term = 4
 let startDay = 13;
 let startMonth = 10;
 let startWeek = 0; // 0=A, 1=B
-const WeeklyEvents = {A:[1,0,1,0,0,0,0], B:[0,1,0,0,1,0,0]};
-const totalWeeks = 9
 let dayInCal = day
 const week = Math.ceil((day-startDay) / 7);
 console.log(`${monthDay} is today`);
@@ -83,25 +83,34 @@ document.addEventListener("DOMContentLoaded", () => {
     TimerText.setAttribute("minutes", 0);
     TimerText.setAttribute("clicked", "0");
     STelement = getel("STime");
-
     if (gss(3)!=0) {getel("LoggedIn").innerText = "Logged in!"}
     if (gss(1)==1) {getel("LoggedIn").innerText = "In Test Mode"}
     if (gss(2)==1 && gss(1)!=1) {
         StartLoad();
     }
-
+    const colTitle = {g:"green",o:"orange"}
+    for (const el of document.querySelectorAll(".colorChange")) {
+        el.setAttribute("title", "Change event colour to "+el.id.split("-").pop())
+    }
     loadTDL();
     Loop();
-});
+}); document.addEventListener("click", (e) => {
+    mousex = e.pageX;
+    mousey = e.pageY;
+    if (e.target === document.body || e.target === document.documentElement) {
+        getel("FinalAdd").hidden = true
+        getel("AddEvent").hidden = true
+    }
+})
 
-////UPDATE////
+////UPDATE////🔃
 function Loop() {
     if (hasUnsavedChanges) {
-        getel("saveWarning").innerText = "!!";
-        getel("saveEvent").style.backgroundColor = "#dddddd";
+        //getel("saveWarning").innerText = "!!";
+        getel("saveEvent").style.backgroundColor = "#f0f0f0ff";
     }
     else {
-        getel("saveWarning").innerText = "";
+        //getel("saveWarning").innerText = "";
         getel("saveEvent").style.backgroundColor = "#b3b3b3";
     }
     if (!hasLoaded) {getel("STime").innerText = "Study Time: None"} else {
@@ -123,7 +132,7 @@ function Loop() {
     setTimeout(Loop, 400)
 }
 
-////KEY PRESSED////
+////KEY PRESSED////🔑
 document.addEventListener('keydown', function(event) {
     let calInput = getel("eventInput");
     if (event.key == "2" && !hasLoaded && gss(2)==1) {getel("loadC").style.cursor = "wait";document.body.style.cursor = "wait";newLoadDays()}
@@ -132,17 +141,16 @@ document.addEventListener('keydown', function(event) {
     if (event.key == "Control" && hasLoaded && document.activeElement !== calInput) {storeDays()}
     if (event.key == "`") {pressingBacktick = 1}
     if (event.key == "1" && pressingBacktick) {sss(2, 1);getel("LoggedIn").innerText = "Welcome back Riley";sss(3,"Admin")}
-    if (event.key == "Enter") if(adding_TDL==1) {TLD_add();} else {storeDays();}
-    if (event.key == "t" && document.activeElement !== calInput && adding_TDL==0) {window.scrollTo({ top: 1000, behavior: 'smooth' });setTimeout(TLD_add_start, 20)}
-    if (event.key == "ArrowRight") {startDay = 1;startMonth = 2;startWeek = 0;c("!");buildCalendar();}
+    if (event.key == "Enter") {if(adding_TDL==1) {TLD_add();hasUnsavedChanges=1} else {storeDays()}}
+    if (event.key == "t"&&document.activeElement!==calInput&&adding_TDL==0&&getel("LogInBg").hidden==true) {window.scrollTo({top: 1000,behavior: 'smooth'});setTimeout(TLD_add_start, 20)}
+    if (event.key == "ArrowRight") {TUp()}
+    if (event.key == "ArrowLeft") {TDown()}
     c("Key pressed: "+event.key)
 }); document.addEventListener('keyup', function(event) {
     if (event.key == "`") {pressingBacktick = 0}
 });
 
-
-
-///LOAD///
+///LOAD///🔽
 window.StartLoad = StartLoad;
 function StartLoad() {
     if (gss(3)!=0||gss(3)!="0") {getel("loadC").style.cursor = "wait";document.body.style.cursor = "wait";newLoadDays()}
@@ -151,7 +159,6 @@ function StartLoad() {
 function newLoadDays() {
     getel("loadC").style.cursor = "wait";
     document.body.style.cursor = "wait";
-
     const dbRef = ref(db);
     get(child(dbRef, `${gss(3)}/Calendar`)).then((snapshot) => {
         if (snapshot.exists()) {
@@ -181,7 +188,7 @@ function newLoadDays() {
                     Password: getel("PasswordInput").input},
                 TDL: {}
             });
-            setTimeout(newLoadDays, 100);
+            setTimeout(newLoadDays, 20);
         }
     }).catch((error) => {
         console.error("Error loading data:", error);
@@ -208,7 +215,7 @@ function newLoadDays() {
 }
 
 let TDList = []
-///SAVE///
+///SAVE///🔼
 window.storeDays = storeDays;
 function storeDays() {
     let TDLInputs = getel("TDL").querySelectorAll("label input[type='checkbox']");
@@ -241,12 +248,9 @@ function storeDays() {
 // Show saved event in tooltip and visual style
 function renderTooltip(box, text) {
     box.title = text || "";
-    if (text && text.trim() !== "") {
-        box.classList.add("active");
-    } else {
-        box.classList.remove("active");
-    }
-}
+    if (text && text.trim() !== "") {box.classList.add("active");
+    } else {box.classList.remove("active");
+}}
 
 ///////////////////////////////
 //////// MAIN FUNCTION ////////
@@ -256,12 +260,13 @@ function buildCalendar() {
     const container = document.querySelector(".calendar-grid");
     container.innerHTML = "";
     dayInCal = day;
-    for (let j=0; j<Month-startMonth; j++) {
+    let box_day = startDay;
+    let box_month = startMonth;
+    /*for (let j=0; j<Month-startMonth; j++) {
         dayInCal += Number(MonthList.d[startMonth-1+j])
-        c(dayInCal)
-    }
+    }*/
     dueWorkList()
-    for (let i = 1; i <= (7*totalWeeks); i++) {
+    for (let i = 1; i <= (7*termdata.Weeks[term-1]); i++) {
         if (i % 7 == 1) {
             const weekDiv = document.createElement("div");
             weekDiv.textContent = Math.ceil(i / 7)
@@ -276,52 +281,44 @@ function buildCalendar() {
             container.appendChild(weekDiv);
         }
         // sort out the months
-        let newDay = i + startDay - 1;
-        let newMonth = startMonth
+        box_day = i + startDay - 1;
+        box_month = startMonth;
         for (let j = 1; j < 13; j++) {
-            if (newDay > MonthList.d[newMonth-1]) {
-                newDay -= MonthList.d[newMonth-1]
-                newMonth += 1
+            if (box_day > MonthList.d[box_month-1]) {
+                box_day -= MonthList.d[box_month-1]
+                box_month += 1
             }
         }
-        let displayDay = newDay
-
-        const dayKey = "day" + i;
+        let displayDay = box_day
+        //const dayKey = "day" + i;
+        dayKey = `${box_day}/${box_month}`
         const box = document.createElement("div");
         box.className = "day-box";
         box.dataset.day = i;
-        
         if (i % 7 == 0 || i % 7 == 6) {
             box.setAttribute("boxColor", "weekend")
         }
         if (gss(2)==1 || gss(1)==1) {
-            if (i % 7 == 4) {
+            if (i % 14 == 4) {
                 box.setAttribute("boxColor", "thursday")
             }}
-            if (WeeklyEvents.A[(i%14)-1]==1 || WeeklyEvents.B[((i+7)%14)-1]==1) {
+            if (termdata.WEvents.A[(i%14)-1]==1 || termdata.WEvents.B[((i+7)%14)-1]==1) {
                 box.setAttribute("boxColor", "friSports")
         }
         const savedText = dayStates[dayKey] || "";
         renderTooltip(box, savedText);
-        
         box.setAttribute("week", Math.ceil(displayDay / 7));
-        
         function savetrimmed() {
             let trimmed = savedText.slice(0, -2);
             box.innerHTML = savedText
             ? `<div class="day-num">${displayDay}</div><div class="event-text">${trimmed}</div>`
             : `<div class="day-num">${displayDay}</div>`;
         }
-        if (savedText.includes("/r")) {
-            savetrimmed();box.setAttribute("boxEventColor", "red")
-        } else if (savedText.includes("/o")) {
-            savetrimmed();box.setAttribute("boxEventColor", "or");
-        } else if (savedText.includes("/g")) {
-            savetrimmed();box.setAttribute("boxEventColor", "grey");
-        } else if (savedText.includes("/p")) {
-            savetrimmed();box.setAttribute("boxEventColor", "purple");
-        } else if (savedText.includes("/c")){
-            savetrimmed();box.setAttribute("boxEventColor", "clear");
+        if (savedText.includes("/r")) {savetrimmed();box.setAttribute("boxEventColor", "red")
+        } else if (savedText.includes("/o")) {savetrimmed();box.setAttribute("boxEventColor", "or");
+        } else if (savedText.includes("/g")) {savetrimmed();box.setAttribute("boxEventColor", "grey");
+        } else if (savedText.includes("/p")) {savetrimmed();box.setAttribute("boxEventColor", "purple");
+        } else if (savedText.includes("/c")){savetrimmed();box.setAttribute("boxEventColor", "clear");
         } else {
             box.innerHTML = savedText
             ? `<div class="day-num">${displayDay}</div><div class="event-text">${savedText}</div>`
@@ -337,7 +334,8 @@ function buildCalendar() {
         } else {
             box.setAttribute("priority", 14);
         }
-        box.setAttribute("data-date", `${String(newMonth).padStart(2, '0')}-${String(displayDay).padStart(2, '0')}`);
+        box.setAttribute("data-date", `${String(box_day).padStart(2, '0')}/${String(box_month).padStart(2, '0')}`);
+        box.setAttribute("day", box_day); box.setAttribute("month", box_month)
         box.setAttribute("dayNum", displayDay)
         if (monthDay == box.getAttribute("data-date")) { //Change quick text if the box is today//
             box.setAttribute("today", "true");
@@ -353,68 +351,17 @@ function buildCalendar() {
                 getel("quickText").textContent = ""
             }
         }
-        box.addEventListener("click", () => {
-            if (!pressingControl) {
-                const input = getel("eventInput");
-                let text = input.value.trim();
-                if (input.value != "") {
-                    switch(selectedColor) {
-                    case 2: {text = (text+"")+"/o";break;}
-                    case 3: {text = (text+"")+"/r";break;}
-                    case 4: {text = (text+"")+"/g";break;}
-                    case 5: {text = (text+"")+"/p";break;}
-                    case 6: {text = (text+"")+"/c";break;}
-                }}
-                // Save or clear local data
-            if (text !== "") {
-                dayStates[dayKey] = text;
-            } else {
-                dayStates[dayKey] = "";
-            }
-            if (text.includes("/r")) {
-                let trimmed2 = text.slice(0, -2);
-                if (text[0] == "#") {
-                    trimmed2 = trimmed2.slice(3);
-                }
-                box.innerHTML = `<div class="day-num">${box.getAttribute("dayNum")}</div><div class="event-text">${trimmed2}</div>`
-                box.setAttribute("boxEventColor", "red")
-            } else if (text.includes("/o")){
-                let trimmed2 = text.slice(0, -2);
-                box.innerHTML = `<div class="day-num">${box.getAttribute("dayNum")}</div><div class="event-text">${trimmed2}</div>`
-                box.setAttribute("boxEventColor", "or")
-            } else if (text.includes("/g")){
-                let trimmed2 = text.slice(0, -2);
-                box.innerHTML = `<div class="day-num">${box.getAttribute("dayNum")}</div><div class="event-text">${trimmed2}</div>`
-                box.setAttribute("boxEventColor", "grey")
-            } else if (text.includes("/p")){
-                let trimmed2 = text.slice(0, -2);
-                box.innerHTML = `<div class="day-num">${box.getAttribute("dayNum")}</div><div class="event-text">${trimmed2}</div>`
-                box.setAttribute("boxEventColor", "purple")
-            } else if (text.includes("/c")){
-                let trimmed2 = text.slice(0, -2);
-                box.innerHTML = `<div class="day-num">${box.getAttribute("dayNum")}</div><div class="event-text">${trimmed2}</div>`
-                box.setAttribute("boxEventColor", "clear")
-            } else {
-                box.innerHTML = `<div class="day-num">${box.getAttribute("dayNum")}</div><div class="event-text">${text}</div>`
-                box.setAttribute("boxEventColor", "green")
-            }
-            renderTooltip(box, text);
-            input.value = "";
-            hasUnsavedChanges = true;
-            modifyEvents()
-            //setTimeout(dueWorkList, 300)
-        }});
+        box.addEventListener("click", () => boxClicked(box.getAttribute("data-date"), box))
         container.appendChild(box);
-
         box.addEventListener("mouseenter", () => {
             let dayAdd = "";
-            if ((i-1+startDay)-dayInCal >= 0) {
-                dayAdd = ("+" + ((i-1+startDay)-dayInCal) + "");
+            if ((i-1+startDay)-box.getAttribute("day") >= 0) {
+                dayAdd = ("+" + ((i-1+startDay)-box.getAttribute("day")) + "");
             }else{
-                dayAdd = (((i-1+startDay)-dayInCal) + "");
+                dayAdd = (((i-1+startDay)-box.getAttribute("day")) + "");
             }
             if (dayAdd.includes("+0")){dayAdd = "Today"}
-            dayAdd += `, ${MonthList.m[newMonth-1]} ${displayDay} ${Year}`
+            dayAdd += `, ${MonthList.m[box.getAttribute("month")-1]} ${displayDay} ${Year}`
             if (Math.ceil(i/7) % 2 == startWeek)
                 {dayAdd += ", Week B"} else { dayAdd += ", Week A"}
             box.setAttribute("title", dayAdd)
@@ -423,11 +370,67 @@ function buildCalendar() {
     const scrollFrame = getel("calendarScroll");
     scrollFrame.scrollTo({ top: ((week-1)*86)-65, behavior: "smooth" });
     modifyEvents();
-    //if (hasLoaded) dueWorkList();
-    if (gss(1) === null) {setTimeout(() => {
-        c("alert!")
-    }, 4000);} // change to a smaller num later
 }
+function boxClicked($day, $box) {
+    c($day+"//"+$box)
+    const input = getel("eventInput");
+    let text = input.value.trim();
+    if (!pressingControl) {
+    if ($day in dayStates || (text != "")) {
+        if (input.value != "") {
+            switch(selectedColor) {
+            case 2: {text = (text+"")+"/o";break;}
+            case 3: {text = (text+"")+"/r";break;}
+            case 4: {text = (text+"")+"/g";break;}
+            case 5: {text = (text+"")+"/p";break;}
+            case 6: {text = (text+"")+"/c";break;}
+        }}
+        // Save or clear local data
+        if (text !== "") {
+            dayStates[$day] = text;
+        } else {
+            delete dayStates[$day]
+        }
+        if (text.includes("/r")) {
+            let trimmed2 = text.slice(0, -2);
+            if (text[0] == "#") {
+                trimmed2 = trimmed2.slice(3);
+            }
+            $box.innerHTML = `<div class="day-num">${$box.getAttribute("dayNum")}</div><div class="event-text">${trimmed2}</div>`
+            $box.setAttribute("boxEventColor", "red")
+        } else if (text.includes("/o")){
+            let trimmed2 = text.slice(0, -2);
+            $box.innerHTML = `<div class="day-num">${$box.getAttribute("dayNum")}</div><div class="event-text">${trimmed2}</div>`
+            $box.setAttribute("boxEventColor", "or")
+        } else if (text.includes("/g")){
+            let trimmed2 = text.slice(0, -2);
+            $box.innerHTML = `<div class="day-num">${$box.getAttribute("dayNum")}</div><div class="event-text">${trimmed2}</div>`
+            $box.setAttribute("boxEventColor", "grey")
+        } else if (text.includes("/p")){
+            let trimmed2 = text.slice(0, -2);
+            $box.innerHTML = `<div class="day-num">${$box.getAttribute("dayNum")}</div><div class="event-text">${trimmed2}</div>`
+            $box.setAttribute("boxEventColor", "purple")
+        } else if (text.includes("/c")){
+            let trimmed2 = text.slice(0, -2);
+            $box.innerHTML = `<div class="day-num">${$box.getAttribute("dayNum")}</div><div class="event-text">${trimmed2}</div>`
+            $box.setAttribute("boxEventColor", "clear")
+        } else {
+            $box.innerHTML = `<div class="day-num">${$box.getAttribute("dayNum")}</div><div class="event-text">${text}</div>`
+            $box.setAttribute("boxEventColor", "green")
+        }
+        renderTooltip($box, text);
+        input.value = "";
+        hasUnsavedChanges = true;
+        modifyEvents()
+        //setTimeout(dueWorkList, 300)
+    } else {setTimeout(() => {
+        const AddE = getel("AddEvent")
+        AddE.hidden = !AddE.hidden;
+        AddE.style.left = mousex+5+"px";
+        AddE.style.top = mousey+5+"px";
+        selectedDay = $day;
+    }, 50)}
+}};
 
 ////////END OF MAIN FUNCTION////////
 ////////////////////////////////////
@@ -450,6 +453,7 @@ function modifyEvents() {
 window.clearInput = clearInput;
 function clearInput() {
     getel("eventInput").value = "";
+    getel("eventInput").focus()
 }
 
 function dueWorkList() {
@@ -560,10 +564,19 @@ function TimeCounter() {
     (Math.round(dayStates["studyTime"]).toString() + ":" + (59 - secs).toString().padStart(2,"0") + " / " + PrevSTime.toString());
 }
 
+window.TDown = TDown;
+function TDown() {term=Math.min(Math.max(term-1,1),4);getel("TermNum").innerText=term;
+    startDay=termdata.SD[term-1]; startMonth=termdata.SM[term-1]; buildCalendar()}
+window.TUp = TUp;
+function TUp() {term=Math.min(Math.max(term+1,1),4);getel("TermNum").innerText=term;
+    startDay=termdata.SD[term-1]; startMonth=termdata.SM[term-1]; buildCalendar()}
+
 window.NotLoggedIn = NotLoggedIn;
 function NotLoggedIn() {
     if (gss(3)==0) {
         getel("LogInBg").hidden = false
+    } else {
+        getel("LogOut").hidden = !getel("LogOut").hidden
     }
 }
 window.LogIn = LogIn;
@@ -572,7 +585,7 @@ function LogIn() {
     if (uservalue != "Admin" && uservalue != "" && getel("PasswordInput").value != "") {
         const dbRef = ref(db);
         get(child(dbRef, `${uservalue}/Profile/Password`)).then((pass) => {
-            if (pass.val() == getel("PasswordInput").value) {
+            if (pass.val() == getel("PasswordInput").value || !pass.exists()) {
                 getel("LogInBg").hidden = true
                 sss(3, getel("UserInput").value)
                 getel("LoggedIn").innerText = "Logged in!"
@@ -580,16 +593,20 @@ function LogIn() {
                 if (loadclicked) {
                     StartLoad()
                 }
-            }
+            } else {
+                getel("PasswordInput").value = ""
+                getel("PasswordInput").placeholder = "Incorrect Password"
+            } 
         })
-    } else {
-        getel("PasswordInput").value = ""
-        getel("PasswordInput").placeholder = "Incorrect Password"
     }
 }
 window.CancelLogIn = CancelLogIn;
 function CancelLogIn() {
     getel("LogInBg").hidden = true
+}
+window.LogOut = LogOut;
+function LogOut() {
+    localStorage.setItem("UserLocal", 0); sss(3, 0)
 }
 
 let adding_TDL = 0;
@@ -629,7 +646,6 @@ function loadTDL() {
         item.parentElement.remove();
     })
 
-    //TDList = JSON.parse(localStorage.getItem("TDL") || "[]");
     for (let i in TDList) {
         let TDLabel = document.createElement("label");
         TDLabel.className = "checkbox-container";
@@ -638,3 +654,24 @@ function loadTDL() {
     }
 }
 
+window.AddEventStart = AddEventStart
+function AddEventStart() {
+    getel("eventInput").focus()
+    getel("AddEvent").hidden = true
+    getel("FinalAdd").hidden = false
+}
+window.AddEvent = AddEvent
+function AddEvent() {
+    if (getel("eventInput").value != "") {
+        getel("FinalAdd").hidden = true;
+        for (const el of document.querySelectorAll(".day-box")) {
+            if (el.getAttribute("data-date") == selectedDay) {
+                boxClicked(selectedDay, el)
+            }
+        }
+    }
+}
+
+window.addEventListener("beforeunload", () => {
+    if (hasUnsavedChanges) {saveDays();}
+});
