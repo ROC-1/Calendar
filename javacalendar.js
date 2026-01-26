@@ -46,7 +46,7 @@ const day =  time.getDate();
 const Month =  time.getMonth() + 1;
 const Year = time.getFullYear();
 
-const monthDay = `${String(day).padStart(2, '0')}/${String(Month).padStart(2, '0')}`;
+const monthDay = `${String(day).padStart(2, '0')}-${String(Month).padStart(2, '0')}`;
 const MonthList = {
     m:["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], 
     d:["31 ", "28", "31", "30", "31", "30", "31", "31", "30", "31", "30", "31"]}
@@ -64,17 +64,17 @@ const week = Math.ceil((day-startDay) / 7);
 console.log(`${monthDay} is today`);
 console.log(`${week} is this week`);
 
-////CONTENT LOADED////
+////CONTENT LOADED////✅
 document.addEventListener("DOMContentLoaded", () => {
     if (gss(1)==1){getel("load_heading").hidden="true";getel("loadC").hidden="true"}
     buildCalendar();
     let colorButtons = document.querySelectorAll(".colorChange");
     colorButtons.forEach((btn, index) => {
-    btn.addEventListener("click", () => {
-        selectedColor = index + 1;
-        colorButtons.forEach(b => b.classList.remove("toggled"));
-        btn.classList.add("toggled");
-    });
+        btn.addEventListener("click", () => {
+            selectedColor = index + 1;
+            colorButtons.forEach(b => b.classList.remove("toggled"));
+            btn.classList.add("toggled");
+        });
     });
     const green = getel("color-green");
     green.classList.add("toggled");
@@ -220,7 +220,6 @@ window.storeDays = storeDays;
 function storeDays() {
     let TDLInputs = getel("TDL").querySelectorAll("label input[type='checkbox']");
     document.getElementById
-    c(TDList)
     TDLInputs.forEach(item => {
         if(item.checked) {
             TDList.splice(TDList.indexOf(item.value), 1);
@@ -291,7 +290,7 @@ function buildCalendar() {
         }
         let displayDay = box_day
         //const dayKey = "day" + i;
-        dayKey = `${box_day}/${box_month}`
+        dayKey = `${box_day}-${box_month}`
         const box = document.createElement("div");
         box.className = "day-box";
         box.dataset.day = i;
@@ -334,7 +333,7 @@ function buildCalendar() {
         } else {
             box.setAttribute("priority", 14);
         }
-        box.setAttribute("data-date", `${String(box_day).padStart(2, '0')}/${String(box_month).padStart(2, '0')}`);
+        box.setAttribute("data-date", `${String(box_day).padStart(2, '0')}-${String(box_month).padStart(2, '0')}`);
         box.setAttribute("day", box_day); box.setAttribute("month", box_month)
         box.setAttribute("dayNum", displayDay)
         if (monthDay == box.getAttribute("data-date")) { //Change quick text if the box is today//
@@ -372,7 +371,6 @@ function buildCalendar() {
     modifyEvents();
 }
 function boxClicked($day, $box) {
-    c($day+"//"+$box)
     const input = getel("eventInput");
     let text = input.value.trim();
     if (!pressingControl) {
@@ -489,7 +487,6 @@ function dueWorkList() {
                 }
                 dueContainer.appendChild(newDue);
             }}}
-    c("priority list: "+priorityList)
     for (let j=0;j<daysList.length;j++) {totalStudyTime = totalStudyTime + Math.max(0, priorityList[j]-daysList[j]);}
     totalStudyTime = Math.pow(totalStudyTime, 3/4) * 15;
     (time.getDay() == 6 || time.getDay() == 0) && (totalStudyTime *= 1.5);
@@ -498,7 +495,6 @@ function dueWorkList() {
     if (0 < totalStudyTime && totalStudyTime < 20) {totalStudyTime = 20}
     totalStudyTime = Math.round(totalStudyTime);
     totalStudyTime = Math.max(totalStudyTime, 0);
-    c("todays ST: "+(Math.round(totalStudyTime)+""));
 }
 
 function dayDifference(Target) {
@@ -566,10 +562,12 @@ function TimeCounter() {
 
 window.TDown = TDown;
 function TDown() {term=Math.min(Math.max(term-1,1),4);getel("TermNum").innerText=term;
-    startDay=termdata.SD[term-1]; startMonth=termdata.SM[term-1]; buildCalendar()}
+    startDay=termdata.SD[term-1]; startMonth=termdata.SM[term-1]; buildCalendar();
+    getel("FinalAdd").hidden = true;getel("AddEvent").hidden = true}
 window.TUp = TUp;
 function TUp() {term=Math.min(Math.max(term+1,1),4);getel("TermNum").innerText=term;
-    startDay=termdata.SD[term-1]; startMonth=termdata.SM[term-1]; buildCalendar()}
+    startDay=termdata.SD[term-1]; startMonth=termdata.SM[term-1]; buildCalendar();
+    getel("FinalAdd").hidden = true;getel("AddEvent").hidden = true}
 
 window.NotLoggedIn = NotLoggedIn;
 function NotLoggedIn() {
