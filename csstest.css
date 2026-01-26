@@ -5,12 +5,13 @@ body {
     color: white; /* Change default text color */
     font-family: Arial, sans-serif
 } html, body {
-    height: 1300px;
+    height: 300px;
 }
 
 #topDiv {
     display: flex;
     margin-bottom: 20px;
+    margin-left: 10px;
 }
 #headline-1 {
     color: rgb(172, 172, 204);
@@ -40,7 +41,7 @@ body {
     margin-top: 7px;
     margin-left: -4px;
     padding-top: 9px;
-    padding-left: 0px;
+    padding-left: 5px;
     position: absolute;
     cursor: pointer;
     text-decoration: none;
@@ -67,24 +68,32 @@ body {
     color: rgb(205, 205, 236);
 }
 
-#LoggedIn {
+.LogB {
     font-size: x-large;
     color: #ffffff;
     margin-left: 728px;
     margin-top: 10px;
-    background-color: #3835689f;
+    background-color: #383568cc;
     height: 44px;
     width: fit-content;
     text-align: center;
     padding: 10px 15px 10px 15px;
     line-height: 14px;
-    border: 3px #000000 solid;
+    border: 4px #000000 solid;
     border-radius: 8px;
     cursor: pointer;
 }#LoggedIn:hover {
     background-color: #4e4b819f;
 }#LoggedIn:active {
     transform: scale(0.98);
+}
+#LogOut {
+    position: absolute;
+    top: 45px;
+    left: 350px;
+    border-radius: 0%;
+    width: 147px;
+    font-weight: bolder;
 }
 #LogInBg {
     width: 100%;
@@ -162,9 +171,23 @@ _____________________________
 }
 
 #TermText {
-    font-size: 45px;
+    font-size: 48px;
     margin-top: -8px;
     margin-bottom: 10px;
+    width: 280px;
+    border: #3f496b 6px solid;
+    /*text-align: center;*/
+    border-radius: 15px;
+    box-shadow: 0 0 10px #000000;
+}
+.TTG {
+    width: 58px;
+    height: 58px;
+    margin: -6px;
+    margin-left: -12px;
+    cursor: pointer;
+}.TTG:active {
+    transform: scale(0.95);
 }
 
 #AddEventDiv {
@@ -346,7 +369,7 @@ _____________________________
 } #eventInput:focus {
     border-color: #2196F3;
     box-shadow: 0 0 8px rgba(33, 150, 243, 0.5);
-    width: 250px;
+    width: 230px;
 }
 
 .eventClear {
@@ -370,7 +393,7 @@ _____________________________
 #color-green {
     background-color: #4CAF50;
     color: #4CAF50;
-} #color-or {
+} #color-orange {
     background-color: orange;
     color: orange;
 } #color-red {
@@ -387,7 +410,7 @@ _____________________________
     color: rgb(65, 65, 65);
 }
 #color-green.toggled { background-color: #3ec743; color:#3ec743; border: 5px solid;}
-#color-or.toggled { background-color: #ffb444; color:#ffb444; border: 5px solid;}
+#color-orange.toggled { background-color: #ffb444; color:#ffb444; border: 5px solid;}
 #color-red.toggled { background-color: #ff6458; color:#ff6458; border: 5px solid;}
 #color-grey.toggled { background-color: rgb(180, 180, 180); color:rgb(180, 180, 180); border: 5px solid;}
 #color-purple.toggled { background-color: rgb(194, 167, 199); color:rgb(194, 167, 199); border: 5px solid;}
@@ -406,6 +429,8 @@ _____________________________
     height: 40px;
     cursor: pointer;
     font-size: 24px;
+    position: absolute;
+    left: 880px;
 }
 #saveEvent:active {
     background-color: #8b8b96;
@@ -477,11 +502,11 @@ _____________________________
     line-height: 0%;
 }
 
-
 #TDL {
     width: 600px;
     height: 350px;
     margin-top: 20px;
+    padding-bottom: 50px;
     padding-left: 20px;
     padding-top: 20px;
     overflow-y:auto;    
@@ -608,6 +633,16 @@ body {
     background-color: #aaa;
 } #TDL_del_button:active {
     transform: scale(0.97);
+}
+
+#AddEvent {
+    font-size:x-large;
+    background-color: #333388bb;
+    border: #000000 5px solid;
+    border-radius: 10px;
+    position: absolute;
+    color: white;
+    cursor: pointer;
 }
 ___________________________
 |\|~*******************~|\|
