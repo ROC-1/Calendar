@@ -181,11 +181,12 @@ _____________________________
     box-shadow: 0 0 10px #000000;
 }
 .TTG {
-    width: 58px;
+    width: 70px;
     height: 58px;
     margin: -6px;
     margin-left: -12px;
     cursor: pointer;
+    user-select: none;
 }.TTG:active {
     transform: scale(0.95);
 }
@@ -424,13 +425,14 @@ _____________________________
 }
 
 #saveEvent {
-    background-color: #b3b3b3;
+    background-color: #a0a0a0;
     width: 180px;
     height: 40px;
     cursor: pointer;
     font-size: 24px;
     position: absolute;
     left: 880px;
+    transition: background-color 0.3s;
 }
 #saveEvent:active {
     background-color: #8b8b96;
