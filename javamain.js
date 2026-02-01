@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }if (gss(2)===null) {
             sss(2, 0)
         }if (gss(3)===null) {
-            sss(3, 0)
+            sss(3, localStorage.getItem("UserLocal") || 0)
         }
     }, 500)
 })
