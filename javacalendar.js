@@ -1,11 +1,13 @@
-let mode = 1
+//After updating to Github, change mode to 1 and remove /* */ for imports, set Testmode in javamain to 0, change script to module
+let mode = 1 // 1=Normal 2=AutoLogin 3=Test
 setTimeout(() => {
     switch (mode) {
-        case 1: sss(1,0); break;
+        case 1: if(gss(1) != 1) {sss(1,0)}; break;
         case 2: sss(1,0); sss(2,1); sss(3,"Admin"); break;
         case 3: sss(1,1); sss(2,1); sss(3,"Admin"); break;
     }
 }, 300)
+
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
@@ -25,6 +27,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+
 let dayStates = {}; // Store event text per day
 let hasUnsavedChanges = false;
 let selectedColor = 1;
@@ -42,8 +45,8 @@ let mousex = 0;
 let mousey = 0;
 let selectedDay = 0;
 let dayKey = 0;
-const day =  time.getDate();
-const Month =  time.getMonth() + 1;
+const day = time.getDate();
+const Month = time.getMonth() + 1;
 const Year = time.getFullYear();
 
 const monthDay = `${String(day).padStart(2, '0')}-${String(Month).padStart(2, '0')}`;
@@ -52,15 +55,13 @@ const MonthList = {
     d:["31 ", "28", "31", "30", "31", "30", "31", "31", "30", "31", "30", "31"]}
 
 //Calendar_Settings:
-let termdata = { SD:[1, 1, 1, 13], SM:[2, 4, 6, 10], SW:[0, 0, 0, 0]/*A or B*/, Weeks:[11,9,10,9],
-    WEvents:{A:[1,0,1,0,0,0,0], B:[0,1,0,0,1,0,0]}
-}
-let term = 4
-let startDay = 13;
-let startMonth = 10;
-let startWeek = 0; // 0=A, 1=B
-let dayInCal = day
-const week = Math.ceil((day-startDay) / 7);
+let termdata = { SD:[26, 1, 1, 13], SM:[1, 4, 6, 10], SW:[0, 0, 0, 0]/*A or B*/, Weeks:[11,9,10,9],
+    WEvents:{A:[1,0,1,0,0,0,0], B:[0,1,0,0,1,0,0]}, HolidayWeeks: [2, 3, 2, 0],
+    PFDays:{"1":["26-01", "27-01", "28-01"]}
+}; let defaultTerm = 1;
+let term = defaultTerm;
+let week = 1+Math.floor(daysApart({day: termdata.SD[term-1], month: termdata.SM[term-1]}, {day: day, month: Month}) / 7);
+let dayInCal = day;
 console.log(`${monthDay} is today`);
 console.log(`${week} is this week`);
 
@@ -92,6 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
     for (const el of document.querySelectorAll(".colorChange")) {
         el.setAttribute("title", "Change event colour to "+el.id.split("-").pop())
     }
+    getel("TermNum").innerText = term
     loadTDL();
     Loop();
 }); document.addEventListener("click", (e) => {
@@ -100,6 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target === document.body || e.target === document.documentElement) {
         getel("FinalAdd").hidden = true
         getel("AddEvent").hidden = true
+        getel("LogOut").hidden = true
     }
 })
 
@@ -111,7 +114,7 @@ function Loop() {
     }
     else {
         //getel("saveWarning").innerText = "";
-        getel("saveEvent").style.backgroundColor = "#b3b3b3";
+        getel("saveEvent").style.backgroundColor = "#a0a0a0ff";
     }
     if (!hasLoaded) {getel("STime").innerText = "Study Time: None"} else {
     getel("STime").innerText = `Study Time: ${Math.round(dayStates["studyTime"])}m`}
@@ -141,7 +144,7 @@ document.addEventListener('keydown', function(event) {
     if (event.key == "Control" && hasLoaded && document.activeElement !== calInput) {storeDays()}
     if (event.key == "`") {pressingBacktick = 1}
     if (event.key == "1" && pressingBacktick) {sss(2, 1);getel("LoggedIn").innerText = "Welcome back Riley";sss(3,"Admin")}
-    if (event.key == "Enter") {if(adding_TDL==1) {TLD_add();hasUnsavedChanges=1} else {storeDays()}}
+    if (event.key == "Enter") {if(adding_TDL==1) {TLD_add();hasUnsavedChanges=1} if(document.activeElement=getel("eventInput")){if(selectedDay!=0){AddEvent()}}}
     if (event.key == "t"&&document.activeElement!==calInput&&adding_TDL==0&&getel("LogInBg").hidden==true) {window.scrollTo({top: 1000,behavior: 'smooth'});setTimeout(TLD_add_start, 20)}
     if (event.key == "ArrowRight") {TUp()}
     if (event.key == "ArrowLeft") {TDown()}
@@ -258,18 +261,16 @@ function buildCalendar() {
     const container = document.querySelector(".calendar-grid");
     container.innerHTML = "";
     dayInCal = day;
-    let box_day = startDay;
-    let box_month = startMonth;
-    /*for (let j=0; j<Month-startMonth; j++) {
-        dayInCal += Number(MonthList.d[startMonth-1+j])
-    }*/
+    let box_day = termdata.SD[term-1];
+    let box_month = termdata.SM[term-1];
     dueWorkList()
-    for (let i = 1; i <= (7*termdata.Weeks[term-1]); i++) {
-        if (i % 7 == 1) {
+    for (let i = 1; i <= (7*(termdata.Weeks[term-1]+termdata.HolidayWeeks[term-1])); i++) {
+        if (i % 7 == 1 && i % 7 < termdata.Weeks[term-1]) {
             const weekDiv = document.createElement("div");
-            weekDiv.textContent = Math.ceil(i / 7)
+            if (termdata.Weeks[term-1] >= i / 7) {weekDiv.textContent = Math.ceil(i / 7)}
+            else {weekDiv.textContent = "H"}
             weekDiv.className = "weekDiv";
-            if (Math.ceil(i/7) % 2 == startWeek) {
+            if (Math.ceil(i/7) % 2 == termdata.SW[term-1]) {
                 weekDiv.setAttribute("weekType", "b");
                 weekDiv.setAttribute("title", "Week B")
             } else {
@@ -279,19 +280,21 @@ function buildCalendar() {
             container.appendChild(weekDiv);
         }
         // sort out the months
-        box_day = i + startDay - 1;
-        box_month = startMonth;
+        box_day = i + termdata.SD[term-1] - 1;
+        box_month = termdata.SM[term-1];
         for (let j = 1; j < 13; j++) {
             if (box_day > MonthList.d[box_month-1]) {
                 box_day -= MonthList.d[box_month-1]
                 box_month += 1
             }
         }
-        //const dayKey = "day" + i;
         dayKey = `${String(box_day).padStart(2, '0')}-${String(box_month).padStart(2, '0')}`
         const box = document.createElement("div");
         box.className = "day-box";
         box.dataset.day = i;
+        if (termdata.Weeks[term-1] < i / 7 || (termdata.PFDays[term] || []).includes(dayKey)) {
+            box.setAttribute("boxColor", "weekend")
+        } else {
         if (i % 7 == 0 || i % 7 == 6) {
             box.setAttribute("boxColor", "weekend")
         }
@@ -299,9 +302,9 @@ function buildCalendar() {
             if (i % 14 == 4) {
                 box.setAttribute("boxColor", "thursday")
             }}
-            if (termdata.WEvents.A[(i%14)-1]==1 || termdata.WEvents.B[((i+7)%14)-1]==1) {
+            /*if (termdata.WEvents.A[(i%14)-1]==1 || termdata.WEvents.B[((i+7)%14)-1]==1) {
                 box.setAttribute("boxColor", "friSports")
-        }
+        }*/}
         const savedText = dayStates[dayKey] || "";
         renderTooltip(box, savedText);
         box.setAttribute("week", Math.ceil(box_day / 7));
@@ -333,7 +336,7 @@ function buildCalendar() {
         }
         box.setAttribute("data-date", dayKey);
         box.setAttribute("day", box_day); box.setAttribute("month", box_month)
-        if (monthDay == box.getAttribute("data-date")) { //Change quick text if the box is today//
+        if (monthDay == box.getAttribute("data-date")) {
             box.setAttribute("today", "true");
             if (gss(2)=="1") {
                 if (box.getAttribute("boxColor") == "thursday") {
@@ -351,20 +354,22 @@ function buildCalendar() {
         container.appendChild(box);
         box.addEventListener("mouseenter", () => {
             let dayAdd = "";
-            if ((i-1+startDay)-box.getAttribute("day") >= 0) {
-                dayAdd = ("+" + ((i-1+startDay)-box.getAttribute("day")) + "");
+            let difference = daysApart({day: day, month: Month}, {day: box.getAttribute("day"), month: box.getAttribute("month")})
+            if (difference >= 0) {
+                dayAdd = ("+" + difference)
             }else{
-                dayAdd = (((i-1+startDay)-box.getAttribute("day")) + "");
+                dayAdd = (difference + "");
             }
             if (dayAdd.includes("+0")){dayAdd = "Today"}
             dayAdd += `, ${MonthList.m[box.getAttribute("month")-1]} ${box.getAttribute("day")} ${Year}`
-            if (Math.ceil(i/7) % 2 == startWeek)
+            if (Math.ceil(i/7) % 2 == termdata.SW[term-1])
                 {dayAdd += ", Week B"} else { dayAdd += ", Week A"}
             box.setAttribute("title", dayAdd)
         });
     }
     const scrollFrame = getel("calendarScroll");
-    scrollFrame.scrollTo({ top: ((week-1)*86)-65, behavior: "smooth" });
+    if (defaultTerm == term) {scrollFrame.scrollTo({ top: ((week-1)*86)-67, behavior: "smooth" })}
+    else {scrollFrame.scrollTo({ top: 0, behavior: "smooth" })}
     modifyEvents();
 }
 function boxClicked($day, $box) {
@@ -418,6 +423,7 @@ function boxClicked($day, $box) {
         hasUnsavedChanges = true;
         modifyEvents()
         //setTimeout(dueWorkList, 300)
+        selectedDay = 0;
     } else {setTimeout(() => {
         const AddE = getel("AddEvent")
         AddE.hidden = !AddE.hidden;
@@ -457,12 +463,13 @@ function dueWorkList() {
     let taskList = []
     const dueContainer = getel("dueList");
     dueContainer.querySelectorAll(".newDue").forEach(el => el.remove());
-    for (let i = 1; i < 100; i++) {
-        let tempKey = "day" + i;
+    for (let m = 0; m < 12; m++) {
+    for (let i = 1; i < 33; i++) {
+        let tempKey = i.toString().padStart(2, '0')+"-"+m.toString().padStart(2, '0');
         if (dayStates[tempKey] && dayStates[tempKey].trim() !== "") {
             let newDue = document.createElement("p");
             newDue.className = ("newDue")
-            newDue.textContent = `${dayDifference(i)}: ${dayStates[tempKey]}`;
+            newDue.textContent = `${daysApart({day: day, month: Month}, {day: i, month: m})}: ${dayStates[tempKey]}`;
             if (!newDue.textContent.includes("/g") && !newDue.textContent.includes("/p") && !newDue.textContent.includes("/c")) {
                 if (newDue.textContent.includes("/o")) {
                     newDue.setAttribute("dueColor", "or")
@@ -471,19 +478,19 @@ function dueWorkList() {
                     newDue.setAttribute("dueColor", "red")
                     newDue.textContent = newDue.textContent.slice(0, -2);
                     if (newDue.textContent.includes("#")) {
-                        //c(dayStates[tempKey][1].toString()+dayStates[tempKey][2].toString());
                         priorityList.push(Number(dayStates[tempKey][1].toString()+dayStates[tempKey][2].toString()));
-                        newDue.textContent = dayDifference(i)+": "+dayStates[tempKey].slice(3,-2);
+                        newDue.textContent = daysApart({day: day, month: Month}, {day: i, month: m})+": "+dayStates[tempKey].slice(3,-2);
                     } else {priorityList.push(15)}
-                    daysList.push(dayDifference(i));
+                    daysList.push(daysApart({day: day, month: Month}, {day: i, month: m}));
                 } else {
-                    if (dayDifference(i) < 3) {
+                    if (daysApart({day:day,month:Month},{day:i,month:m}) < 3 && daysApart({day:day,month:Month},{day:i,month:m}) > 3) {
                         newDue.textContent = ("!"+newDue.textContent);
-                        taskList.push(dayDifference(i));
+                        taskList.push(daysApart({day: day, month: Month}, {day: i, month: m}));
                     }
                 }
                 dueContainer.appendChild(newDue);
             }}}
+    }
     for (let j=0;j<daysList.length;j++) {totalStudyTime = totalStudyTime + Math.max(0, priorityList[j]-daysList[j]);}
     totalStudyTime = Math.pow(totalStudyTime, 3/4) * 15;
     (time.getDay() == 6 || time.getDay() == 0) && (totalStudyTime *= 1.5);
@@ -494,9 +501,13 @@ function dueWorkList() {
     totalStudyTime = Math.max(totalStudyTime, 0);
 }
 
-function dayDifference(Target) {
-    return((Target-1+dayInCal)-day);
+function daysApart(date1, date2) {
+    const d1 = new Date(Year, date1.month - 1, date1.day);
+    const d2 = new Date(Year, date2.month - 1, date2.day);  
+    const msPerDay = 1000 * 60 * 60 * 24;
+    return Math.round((d2 - d1) / msPerDay);
 }
+
 
 window.STimeC = STimeC;
 function STimeC() {
@@ -559,11 +570,11 @@ function TimeCounter() {
 
 window.TDown = TDown;
 function TDown() {term=Math.min(Math.max(term-1,1),4);getel("TermNum").innerText=term;
-    startDay=termdata.SD[term-1]; startMonth=termdata.SM[term-1]; buildCalendar();
+    termdata.SD[term-1]=termdata.SD[term-1]; termdata.SM[term-1]=termdata.SM[term-1]; buildCalendar();
     getel("FinalAdd").hidden = true;getel("AddEvent").hidden = true}
 window.TUp = TUp;
 function TUp() {term=Math.min(Math.max(term+1,1),4);getel("TermNum").innerText=term;
-    startDay=termdata.SD[term-1]; startMonth=termdata.SM[term-1]; buildCalendar();
+    termdata.SD[term-1]=termdata.SD[term-1]; termdata.SM[term-1]=termdata.SM[term-1]; buildCalendar();
     getel("FinalAdd").hidden = true;getel("AddEvent").hidden = true}
 
 window.NotLoggedIn = NotLoggedIn;
@@ -601,7 +612,9 @@ function CancelLogIn() {
 }
 window.LogOut = LogOut;
 function LogOut() {
-    localStorage.setItem("UserLocal", 0); sss(3, 0)
+    localStorage.setItem("UserLocal", 0); sss(3, 0);
+    TDList = {}; loadTDL();
+    dayStates = {}; buildCalendar()
 }
 
 let adding_TDL = 0;
@@ -667,6 +680,8 @@ function AddEvent() {
     }
 }
 
-window.addEventListener("beforeunload", () => {
-    if (hasUnsavedChanges) {saveDays();}
+window.addEventListener('beforeunload', function(event) {
+    if (hasUnsavedChanges && gss(1) != 1) {
+        event.preventDefault();
+    }
 });
