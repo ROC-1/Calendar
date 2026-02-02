@@ -1,4 +1,3 @@
-//After updating to Github, change mode to 1 and remove /* */ for imports, set Testmode in javamain to 0, change script to module
 let mode = 1 // 1=Normal 2=AutoLogin 3=Test
 setTimeout(() => {
     switch (mode) {
@@ -55,9 +54,9 @@ const MonthList = {
     d:["31 ", "28", "31", "30", "31", "30", "31", "31", "30", "31", "30", "31"]}
 
 //Calendar_Settings:
-let termdata = { SD:[26, 1, 1, 13], SM:[1, 4, 6, 10], SW:[0, 0, 0, 0]/*A or B*/, Weeks:[11,9,10,9],
+let termdata = { SD:[26, 20, 20, 12], SM:[1, 4, 7, 10], SW:[0, 0, 0, 0]/*A or B*/, Weeks:[10,10,10,9],
     WEvents:{A:[1,0,1,0,0,0,0], B:[0,1,0,0,1,0,0]}, HolidayWeeks: [2, 3, 2, 0],
-    PFDays:{"1":["26-01", "27-01", "28-01"]}
+    PFDays:{"1":["26-01", "27-01", "28-01", "03-04"]}
 }; let defaultTerm = 1;
 let term = defaultTerm;
 let week = 1+Math.floor(daysApart({day: termdata.SD[term-1], month: termdata.SM[term-1]}, {day: day, month: Month}) / 7);
@@ -89,7 +88,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (gss(2)==1 && gss(1)!=1) {
         StartLoad();
     }
-    const colTitle = {g:"green",o:"orange"}
     for (const el of document.querySelectorAll(".colorChange")) {
         el.setAttribute("title", "Change event colour to "+el.id.split("-").pop())
     }
@@ -111,10 +109,12 @@ function Loop() {
     if (hasUnsavedChanges) {
         //getel("saveWarning").innerText = "!!";
         getel("saveEvent").style.backgroundColor = "#f0f0f0ff";
+        getel("saveEvent").innerHTML = "<b>Save Changes</b>"
     }
     else {
         //getel("saveWarning").innerText = "";
         getel("saveEvent").style.backgroundColor = "#a0a0a0ff";
+        getel("saveEvent").innerHTML = "Save Changes"
     }
     if (!hasLoaded) {getel("STime").innerText = "Study Time: None"} else {
     getel("STime").innerText = `Study Time: ${Math.round(dayStates["studyTime"])}m`}
