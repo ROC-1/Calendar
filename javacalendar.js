@@ -1,3 +1,5 @@
+[]
+//After updating to Github, change mode to 1 and remove /* */ for imports, set Testmode in javamain to 0, change script to module
 let mode = 1 // 1=Normal 2=AutoLogin 3=Test
 setTimeout(() => {
     switch (mode) {
@@ -7,7 +9,7 @@ setTimeout(() => {
     }
 }, 300)
 
-
+/*
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
@@ -25,7 +27,7 @@ const firebaseConfig = {
 // 🔗 Initialize Firebase and get database
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-
+*/
 
 let dayStates = {}; // Store event text per day
 let hasUnsavedChanges = false;
@@ -53,11 +55,12 @@ const MonthList = {
     m:["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], 
     d:["31 ", "28", "31", "30", "31", "30", "31", "31", "30", "31", "30", "31"]}
 
-//Calendar_Settings:
+////Calendar_Settings////
 let termdata = { SD:[26, 20, 20, 12], SM:[1, 4, 7, 10], SW:[0, 0, 0, 0]/*A or B*/, Weeks:[10,10,10,9],
     WEvents:{A:[1,0,1,0,0,0,0], B:[0,1,0,0,1,0,0]}, HolidayWeeks: [2, 3, 2, 0],
     PFDays:{"1":["26-01", "27-01", "28-01", "03-04"]}
 }; let defaultTerm = 1;
+
 let term = defaultTerm;
 let week = 1+Math.floor(daysApart({day: termdata.SD[term-1], month: termdata.SM[term-1]}, {day: day, month: Month}) / 7);
 let dayInCal = day;
@@ -66,7 +69,7 @@ console.log(`${week} is this week`);
 
 ////CONTENT LOADED////✅
 document.addEventListener("DOMContentLoaded", () => {
-    if (gss(1)==1){getel("load_heading").hidden="true";getel("loadC").hidden="true"}
+    if (gss(1)==1){getel("load_heading").hidden="true";getel("loadC").hidden="true";getel("Title").innerText="Test Calendar"}
     buildCalendar();
     let colorButtons = document.querySelectorAll(".colorChange");
     colorButtons.forEach((btn, index) => {
@@ -144,7 +147,7 @@ document.addEventListener('keydown', function(event) {
     if (event.key == "Control" && hasLoaded && document.activeElement !== calInput) {storeDays()}
     if (event.key == "`") {pressingBacktick = 1}
     if (event.key == "1" && pressingBacktick) {sss(2, 1);getel("LoggedIn").innerText = "Welcome back Riley";sss(3,"Admin")}
-    if (event.key == "Enter") {if(adding_TDL==1) {TLD_add();hasUnsavedChanges=1} if(document.activeElement=getel("eventInput")){if(selectedDay!=0){AddEvent()}}}
+    if (event.key == "Enter") {if(adding_TDL==1) {TLD_add();hasUnsavedChanges=1} else if(document.activeElement==getel("eventInput")){if(selectedDay!=0){AddEvent()}} else {storeDays()}}
     if (event.key == "t"&&document.activeElement!==calInput&&adding_TDL==0&&getel("LogInBg").hidden==true) {window.scrollTo({top: 1000,behavior: 'smooth'});setTimeout(TLD_add_start, 20)}
     if (event.key == "ArrowRight") {TUp()}
     if (event.key == "ArrowLeft") {TDown()}
@@ -222,7 +225,6 @@ let TDList = []
 window.storeDays = storeDays;
 function storeDays() {
     let TDLInputs = getel("TDL").querySelectorAll("label input[type='checkbox']");
-    document.getElementById
     TDLInputs.forEach(item => {
         if(item.checked) {
             TDList.splice(TDList.indexOf(item.value), 1);
@@ -299,9 +301,12 @@ function buildCalendar() {
             box.setAttribute("boxColor", "weekend")
         }
         if (gss(2)==1 || gss(1)==1) {
-            if (i % 14 == 4) {
+            if (i % 7 == 3) {
                 box.setAttribute("boxColor", "thursday")
             }}
+            if (i % 14 == 9) {
+                box.setAttribute("boxColor", "thursday")
+            }
             /*if (termdata.WEvents.A[(i%14)-1]==1 || termdata.WEvents.B[((i+7)%14)-1]==1) {
                 box.setAttribute("boxColor", "friSports")
         }*/}
