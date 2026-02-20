@@ -9,11 +9,11 @@ setTimeout(() => {
     }
 }, 300)
 
-
+/*
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-// 🔑 Your Firebase config
+// Your Firebase config
 const firebaseConfig = {
     apiKey: "AIzaSyBVOC6RVvQw2V7YSN8MF24kM0p9N1tcfTo",
     authDomain: "calendar-5487e.firebaseapp.com",
@@ -27,7 +27,7 @@ const firebaseConfig = {
 // 🔗 Initialize Firebase and get database
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-
+*/
 
 let dayStates = {}; // Store event text per day
 let hasUnsavedChanges = false;
@@ -46,7 +46,7 @@ let mousex = 0;
 let mousey = 0;
 let selectedDay = 0;
 let dayKey = 0;
-const day = time.getDate();
+const day = 18//time.getDate();
 const Month = time.getMonth() + 1;
 const Year = time.getFullYear();
 
@@ -57,9 +57,9 @@ const MonthList = {
 
 ////Calendar_Settings////
 let termdata = { SD:[26, 20, 20, 12], SM:[1, 4, 7, 10], SW:[0, 0, 0, 0]/*A or B*/, Weeks:[10,10,10,9],
-    WEvents:{A:[1,0,1,0,0,0,0], B:[0,1,0,0,1,0,0]}, HolidayWeeks: [2, 3, 2, 0],
-    PFDays:{"1":["26-01", "27-01", "28-01", "03-04"]}
-}; let defaultTerm = 1;
+    WEvents:{A:[1,0,1,0,0,0,0], B:[0,1,0,0,1,0,0]}, WEventName:"Weekly Event", 
+    HolidayWeeks: [2, 3, 2, 0], PFDays:{"1":["26-01", "27-01", "28-01", "03-04"]}
+}; const defaultTerm = 1;
 
 let term = defaultTerm;
 let week = 1+Math.floor(daysApart({day: termdata.SD[term-1], month: termdata.SM[term-1]}, {day: day, month: Month}) / 7);
@@ -247,6 +247,9 @@ function storeDays() {
         .then(() => {
             document.body.style.cursor = "default";
         })
+    setTimeout(() => {
+        dueWorkList()
+    }, 200);
 }
 
 // Show saved event in tooltip and visual style
@@ -293,7 +296,13 @@ function buildCalendar() {
         dayKey = `${String(box_day).padStart(2, '0')}-${String(box_month).padStart(2, '0')}`
         const box = document.createElement("div");
         box.className = "day-box";
-        box.dataset.day = i;
+        box.style.width = "130px"
+        box.style.height = "70px"
+        function boxOutline(color) {
+            box.style.outline="5px solid "+color;
+            box.style.width = "129px"
+            box.style.height = "69px"
+        }
         if (termdata.Weeks[term-1] < i / 7 || (termdata.PFDays[term] || []).includes(dayKey)) {
             box.setAttribute("boxColor", "weekend")
         } else {
@@ -302,14 +311,12 @@ function buildCalendar() {
         }
         if (gss(2)==1 || gss(1)==1) {
             if (i % 7 == 3) {
-                box.setAttribute("boxColor", "thursday")
-            }}
-            if (i % 14 == 9) {
-                box.setAttribute("boxColor", "thursday")
+                box.setAttribute("boxColor", "WeeklyEvent");boxOutline("rgb(88, 106, 117)");
             }
-            /*if (termdata.WEvents.A[(i%14)-1]==1 || termdata.WEvents.B[((i+7)%14)-1]==1) {
-                box.setAttribute("boxColor", "friSports")
-        }*/}
+            if (i % 14 == 9) {
+                box.setAttribute("boxColor", "WeeklyEvent");boxOutline("rgb(88, 106, 117)");
+            }
+        }}
         const savedText = dayStates[dayKey] || "";
         renderTooltip(box, savedText);
         box.setAttribute("week", Math.ceil(box_day / 7));
@@ -319,11 +326,11 @@ function buildCalendar() {
             ? `<div class="day-num">${box_day}</div><div class="event-text">${trimmed}</div>`
             : `<div class="day-num">${box_day}</div>`;
         }
-        if (savedText.includes("/r")) {savetrimmed();box.setAttribute("boxEventColor", "red")
-        } else if (savedText.includes("/o")) {savetrimmed();box.setAttribute("boxEventColor", "or");
-        } else if (savedText.includes("/g")) {savetrimmed();box.setAttribute("boxEventColor", "grey");
-        } else if (savedText.includes("/p")) {savetrimmed();box.setAttribute("boxEventColor", "purple");
-        } else if (savedText.includes("/c")){savetrimmed();box.setAttribute("boxEventColor", "clear");
+        if(savedText.includes("/r")) {savetrimmed();box.setAttribute("boxEventColor","red");
+        } else if(savedText.includes("/o")){savetrimmed();box.setAttribute("boxEventColor","or");
+        } else if(savedText.includes("/g")){savetrimmed();box.setAttribute("boxEventColor","grey");
+        } else if(savedText.includes("/p")){savetrimmed();box.setAttribute("boxEventColor","purple");
+        } else if(savedText.includes("/c")){savetrimmed();box.setAttribute("boxEventColor","clear");
         } else {
             box.innerHTML = savedText
             ? `<div class="day-num">${box_day}</div><div class="event-text">${savedText}</div>`
@@ -344,16 +351,24 @@ function buildCalendar() {
         if (monthDay == box.getAttribute("data-date")) {
             box.setAttribute("today", "true");
             if (gss(2)=="1") {
-                if (box.getAttribute("boxColor") == "thursday") {
-                    getel("quickText").textContent = "Today: Piano/Tennis"
-                } else if (box.getAttribute("boxColor") == "friSports") {
-                    getel("quickText").textContent = "Today: Sport/PE, bring Sport Shoes"
+                if (box.getAttribute("boxColor") == "WeeklyEvent") {
+                    getel("quickText").textContent = "Today: "+termdata.WEventName
+                    setTimeout(() => {
+                        box.style.outline = "0px solid"
+                        box.style.border = "8px solid rgb(88, 106, 117)";
+                        box.style.outline = "5px solid white"
+                        box.style.width = "115px"
+                        box.style.height = "53px"
+                    }, 10);
                 } else {
                     getel("quickText").textContent = "Today: No events"
                 }
             } else {
                 getel("quickText").textContent = ""
             }
+            box.style.width = "115px"
+            box.style.height = "53px"
+            boxOutline("white")
         }
         box.addEventListener("click", () => boxClicked(box.getAttribute("data-date"), box))
         container.appendChild(box);
@@ -620,6 +635,7 @@ function LogOut() {
     localStorage.setItem("UserLocal", 0); sss(3, 0);
     TDList = {}; loadTDL();
     dayStates = {}; buildCalendar()
+    getel("LogOut").hidden = true
 }
 
 let adding_TDL = 0;
@@ -690,4 +706,3 @@ window.addEventListener('beforeunload', function(event) {
         event.preventDefault();
     }
 });
-
