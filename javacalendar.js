@@ -46,7 +46,7 @@ let mousex = 0;
 let mousey = 0;
 let selectedDay = 0;
 let dayKey = 0;
-const day = 18//time.getDate();
+const day = time.getDate();
 const Month = time.getMonth() + 1;
 const Year = time.getFullYear();
 
@@ -706,4 +706,5 @@ window.addEventListener('beforeunload', function(event) {
         event.preventDefault();
     }
 });
+
 
