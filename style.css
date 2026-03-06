@@ -237,19 +237,20 @@ _____________________________
     background-color: #00000071;
 }
 #loadC {
-    font-size: 27px; 
+    font-size: 25px; 
     padding-left: 12px;
     padding-right: 12px;
     background-color: #dddddd;/*#b3b3b3;*/
     cursor: pointer;
     position: absolute;
     margin-top: 10px;
-    margin-left: 400px;
-    width: 220px;
-    height: 60px;
+    margin-left: 300px;
+    width: fit-content;
+    height: 70px;
     border: #9b9b9b 5px solid;
+    border-radius: 15px;
 }#loadC:hover {
-    transform: scale(1.05);
+    transform: scale(1.03);
 }#loadC:active {
     transform: scale(0.98);
 }
