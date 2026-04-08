@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script type="module" src="javacalendar.js" id='--OPEN IN GITHUB--'></script>
+    <!--script type="module" src="javacalendar.js" id='--OPEN IN GITHUB--'></script-->
+    <script src="javacalendar.js"></script>
 
     <meta charset="UTF-8">
-    <title id="Title">Term 4 Calendar</title>
+    <title id="Title">Term 1 Calendar</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="Logo.png" type="image/png">
     <script src="javamain.js"></script>
@@ -12,7 +13,7 @@
 <body>
     <div id="topDiv">
         <div id="headline-1"><b>Term Calendar</b></div>
-        <p id="quickText">Today: No events</p>
+        <!--p id="quickText">Today: No events</p-->
         <button id="LoggedIn" class="LogB" onclick="NotLoggedIn()">Not Logged In</button>
     </div>
     <button id="LogOut" class="LogB" onclick="LogOut()" hidden>Log out</button>
@@ -23,17 +24,28 @@
         <svg class="TTG" onclick="TUp()"><polygon points="18,11 18,61 58,36" fill="#eee" stroke="black" stroke-width="3"></svg>
     </div>
 
-    <input type="text" id="eventInput"/>
-    <button class="eventClear" onclick="clearInput()">✖️ Clear</button>
-    <button class="colorChange" id="color-green">g</button>
-    <button class="colorChange" id="color-orange">o</button>
-    <button class="colorChange" id="color-red">b</button>
-    <button class="colorChange" id="color-grey">g</button>
-    <button class="colorChange" id="color-purple">p</button>
-    <button class="colorChange" id="color-clear">c</button>
-    <button class="eventClear" id="FinalAdd" onclick="AddEvent()" hidden>Add Event</button>
-    <!--button id="saveWarning"><b>!!</b></button-->
-    <button id="saveEvent"onclick="storeDays()">Save Changes</button>
+    <div id="buttonRow">
+        <input type="text" id="eventInput" placeholder="Create event"/>
+        <!--button class="eventClear" onclick="clearInput()">✖️ Clear</button-->
+        <!--button class="eventClear" id="changeColor">Colour: &nbsp;<div id="changeColorInside"></div></button-->
+        <div id="colorPickerWrapper">
+            <button id="changeColor" class="eventClear">
+                <span>&nbsp;Colour:</span>
+                <span id="changeColorInside"></span>
+            </button>
+            <div id="colorDropdown" hidden>
+                <div class="colorOption" data-color="#4CAF50" id="green"></div>
+                <div class="colorOption" data-color="#ffa500" id="orange"></div>
+                <div class="colorOption" data-color="#ad1919" id="red"></div>
+                <div class="colorOption" data-color="#aa85b1" id="purple"></div>
+                <div class="colorOption" data-color="#838383" id="grey"></div>
+                <div class="colorOption" data-color="#eeeeee" id="clear"></div>
+            </div>
+            <button class="eventClear" id="FinalAdd" onclick="AddEvent()" hidden>Add Event</button>
+        </div>
+        <!--button id="saveWarning"><b>!!</b></button-->
+        <button id="saveEvent"onclick="storeDays()">Save Changes</button>
+    </div>
 
     <div id="calendarScroll">
         <div id="load_heading"></div>
@@ -62,9 +74,9 @@
         </div>
     </div>
 
-    <button id="AddEvent" onclick="AddEventStart()" hidden>Add Event</button>
-    <button id="EditEvent" onclick="a()" hidden>Edit Event</button>
-    <button id="DeleteEvent" onclick="a()" hidden>Delete Event</button>
+    <button class="eventButtons" id="AddEvent" onclick="AddEventStart()" hidden>Add Event</button>
+    <button class="eventButtons" id="EditEvent" onclick="editEvent()" hidden>Edit Event</button>
+    <button class="eventButtons" id="DeleteEvent" onclick="deleteEvent()" hidden>Delete Event</button>
 
     <div id="TDL">
         <h3 id="TDL_MainText">To Do List</h3>
@@ -72,6 +84,7 @@
         <input hidden type="text" id="TDLInput" class="add_TDL" placeholder="Add a task...">
         <input hidden type="number" id="TDLInput2" class="add_TDL" placeholder="0">
         <button hidden id="TDLAddEnd" class="add_TDL" onclick="TLD_add()">Add</button>
+        <button id="TDLSave" class="add_TDL" onclick="storeDays()">Save</button>
     </div>
 </body>
 </html>
