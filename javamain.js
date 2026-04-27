@@ -54,11 +54,9 @@ document.addEventListener("DOMContentLoaded", () => {
         TopBar2.innerHTML = '<b><a class="TopA" href="Games.html">&nbsp &nbsp &nbsp &nbsp &nbspGames &nbsp &nbsp &nbsp &nbsp &nbsp</a></b>';
         TopBar2.className = "TopBarEl";
         TopBar2.id = "TopBar2";
-        if (gss(2)==1) {
-            TopBar3.innerHTML = '<b><a class="TopA" href="Notes.html">&nbsp &nbsp &nbsp &nbsp &nbsp Notes &nbsp &nbsp &nbsp &nbsp &nbsp</a></b>';
-            TopBar3.className = "TopBarEl";
-            TopBar3.id = "TopBar3";
-        }
+        TopBar3.innerHTML = '<b><a class="TopA" href="Notes.html">&nbsp &nbsp &nbsp &nbsp &nbsp Notes &nbsp &nbsp &nbsp &nbsp &nbsp</a></b>';
+        TopBar3.className = "TopBarEl";
+        TopBar3.id = "TopBar3";
         /*
         if (window.location.pathname.split("/").pop() == "index.html")
             {TopBar1.id="TopBar1";TopBar2.id="TopBar2";TopBar3.id="TopBar3";}
