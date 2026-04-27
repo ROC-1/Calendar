@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
         TopBar2.className = "TopBarEl";
         TopBar2.id = "TopBar2";
         if (gss(2)==1) {
-            TopBar3.innerHTML = '<b><a class="TopA" href="Music.html">&nbsp &nbsp &nbsp &nbsp &nbsp Music &nbsp &nbsp &nbsp &nbsp &nbsp</a></b>';
+            TopBar3.innerHTML = '<b><a class="TopA" href="Notes.html">&nbsp &nbsp &nbsp &nbsp &nbsp Notes &nbsp &nbsp &nbsp &nbsp &nbsp</a></b>';
             TopBar3.className = "TopBarEl";
             TopBar3.id = "TopBar3";
         }
@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (window.location.pathname.split("/").pop() == "Games.html")
             {TopBar1.id="TopBar2";TopBar2.id="TopBar1";TopBar3.id="TopBar3";}
-        else if (window.location.pathname.split("/").pop() == "Music.html")
+        else if (window.location.pathname.split("/").pop() == "Notes.html")
             {TopBar1.id="TopBar2";TopBar2.id="TopBar3";TopBar3.id="TopBar1";}
         else {TopBar1.id="TopBar1";TopBar2.id="TopBar2";TopBar3.id="TopBar3";}
         TopBar.appendChild(TopBar1);
