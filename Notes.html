@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title id="Title">Study Notes</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="Logo.png" type="image/png">
+    <script src="javamain.js"></script>
+</head>
+<body>
+    <div id="topDiv">
+        <div id="headline-1"><b>&nbsp;Notes</b></div>
+    </div>
+
+    <!--MATH EXT-->
+    <div class="dropdown-divider">
+    <div class="dropdown-toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="dd-content-1">
+        <div class="title">
+            <span class="main">Maths - Extention only</span>
+            <span class="sub"><b>Cost: Free</b></span>
+        </div>
+        <div class="arrow" aria-hidden="true">▾</div>
+    </div>
+    <div class="divider-line"></div>
+    <div class="dropdown-content" id="dd-content-1" aria-hidden="true">
+        <div class="dropdown-list">
+            <a href="https://docs.google.com/document/d/13zHGhCUHNpGctZBGML0ZT0rgIStVMp35ddMTuS17kL4/edit?tab=t.0" target="_blank"class="dropdown-item" id="dropdown-item-1">
+                <img class="docsLogo" src="Images/google-docs-logo.png">
+                <span class="docText">Maths extension study notes</span>
+                <span class="muted-small"></span>
+            </a>
+        </div>
+    </div>
+
+    <!--MATH ADVANCED-->
+    <div class="dropdown-divider">
+    <div class="dropdown-toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="dd-content-1">
+        <div class="title">
+            <span class="main">Maths - Advanced only</span>
+            <span class="sub"><b>Cost: Free</b></span>
+        </div>
+        <div class="arrow" aria-hidden="true">▾</div>
+    </div>
+    <div class="divider-line"></div>
+    <div class="dropdown-content" id="dd-content-1" aria-hidden="true">
+        <div class="dropdown-list">
+            <a href="https://docs.google.com/document/d/1JMrVGQnr998X8cLZGqbHolLSJ0uf1SYxsdkwoe9gqK0/edit?tab=t.kwgd4k4ammij" target="_blank"class="dropdown-item" id="dropdown-item-1">
+                <img class="docsLogo" src="Images/google-docs-logo.png">
+                <span class="docText">Maths advanced study notes</span>
+                <span class="muted-small"></span>
+            </a>
+        </div>
+    </div>
+
+    <!--CHEM-->
+    <div class="dropdown-divider">
+    <div class="dropdown-toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="dd-content-1" id="dropdown-toggle-u1">
+        <div class="title">
+            <span class="main">Chemistry</span>
+            <span class="sub"><b>Cost: $10 (coming soon)</b></span>
+        </div>
+        <div class="arrow" aria-hidden="true">▾</div>
+    </div>
+    <div class="divider-line"></div>
+    <div class="dropdown-content" id="dd-content-1" aria-hidden="true">
+        <!--div class="dropdown-list">
+            <a href="phys doc here" target="_blank"class="dropdown-item" id="dropdown-item-1">
+                <img class="docsLogo" src="Images/google-docs-logo.png">
+                <span class="docText">Maths advanced study notes</span>
+                <span class="muted-small"></span>
+            </a>
+        </div-->
+    </div>
+
+    <!--PHYS-->
+    <div class="dropdown-divider">
+    <div class="dropdown-toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="dd-content-1" id="dropdown-toggle-u2">
+        <div class="title">
+            <span class="main">Physics</span>
+            <span class="sub"><b>Cost: $10 (coming soon)</b></span>
+        </div>
+        <div class="arrow" aria-hidden="true">▾</div>
+    </div>
+    <div class="divider-line"></div>
+    <div class="dropdown-content" id="dd-content-1" aria-hidden="true">
+        <!--div class="dropdown-list">
+            <a href="phys doc here" target="_blank"class="dropdown-item" id="dropdown-item-1">
+                <img class="docsLogo" src="Images/google-docs-logo.png">
+                <span class="docText">Maths advanced study notes</span>
+                <span class="muted-small"></span>
+            </a>
+        </div-->
+    </div>
+
+    <!--ECO-->
+    <div class="dropdown-divider">
+    <div class="dropdown-toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="dd-content-1" id="dropdown-toggle-u3">
+        <div class="title">
+            <span class="main">Economics</span>
+            <span class="sub"><b>Cost: $10 (coming soon)</b></span>
+        </div>
+        <div class="arrow" aria-hidden="true">▾</div>
+    </div>
+    <div class="divider-line"></div>
+    <div class="dropdown-content" id="dd-content-1" aria-hidden="true">
+        <!--div class="dropdown-list">
+            <a href="phys doc here" target="_blank"class="dropdown-item" id="dropdown-item-1">
+                <img class="docsLogo" src="Images/google-docs-logo.png">
+                <span class="docText">Maths advanced study notes</span>
+                <span class="muted-small"></span>
+            </a>
+        </div-->
+    </div>
+
+
+    <script>
+    document.querySelectorAll('.dropdown-divider').forEach(dropdown => {
+      const toggle = dropdown.querySelector('.dropdown-toggle');
+      const content = dropdown.querySelector('.dropdown-content');
+      const arrow = dropdown.querySelector('.arrow');
+
+      content.style.maxHeight = '0px';
+
+      function open(){
+        content.style.maxHeight = content.scrollHeight + 'px';
+        content.classList.add('open');
+        arrow.style.transform = 'rotate(180deg)';
+      }
+
+      function close(){
+        content.style.maxHeight = content.scrollHeight + 'px';
+        content.offsetHeight; // force reflow
+        content.style.maxHeight = '0px';
+        content.classList.remove('open');
+        arrow.style.transform = 'rotate(0deg)';
+      }
+
+      toggle.addEventListener('click', () => {
+        if(content.classList.contains('open')){
+          close();
+        } else {
+          open();
+        }
+      });
+    });
+    </script>
+</body>
+</html>
